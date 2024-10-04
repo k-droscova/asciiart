@@ -1,6 +1,9 @@
 package Core.Extensions
 
 import java.awt.image.BufferedImage
+import Core.Models.*
+import Services.Logging.*
+import Services.Logging.Errors.{BaseError, GeneralErrorCodes}
 
 /**
  * Extension methods for BufferedImage to handle conversion to Image.
@@ -12,7 +15,7 @@ object BufferedImageExtensions {
    * Handles RGB, Grayscale, and ARGB BufferedImage types.
    */
   extension (bufferedImage: BufferedImage) {
-    def toImage: Image[_ <: Pixel] = {
+    def toImage: Image[? <: Pixel] = {
       val width = bufferedImage.getWidth
       val height = bufferedImage.getHeight
 
@@ -53,7 +56,11 @@ object BufferedImageExtensions {
           new Image[AlphaPixel](width, height, pixels)
 
         case _ =>
-          throw new UnsupportedOperationException(s"Unsupported image type: ${bufferedImage.getType}")
+          throw BaseError(
+            message = "Unsupported image type: ${bufferedImage.getType}",
+            context = LogContext.UI,
+            errorCode = GeneralErrorCodes.InvalidArgument
+          )
       }
     }
   }
