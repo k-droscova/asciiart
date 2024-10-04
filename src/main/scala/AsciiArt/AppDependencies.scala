@@ -1,16 +1,12 @@
 package AsciiArt
 
+import Services.CommandLineParsing.{CommandLineParser, FilterFactory, LoaderFactory}
+import Services.ImageLoader.ImageLoader
+import Services.Logging.{ConsoleLoggerService, LoggerService}
+import Services.Filters.Filter
+
 object AppDependencies {
-
-  // Logger service
   lazy val logger: LoggerService = new ConsoleLoggerService()
-
-  // Image loader service (file-based loader for example)
-  lazy val imageLoader: ImageLoader = new FileImageLoader("image.jpg")
-
-  // Filter service
-  lazy val filterService: FilterService = new BasicFilterService()
-
-  // Output service (saving and printing)
-  lazy val outputService: OutputService = new FileOutputService("output.txt")
+  lazy val loaderFactory: CommandLineParser[ImageLoader] = LoaderFactory
+  lazy val filterFactory: CommandLineParser[List[Filter]] = FilterFactory
 }
