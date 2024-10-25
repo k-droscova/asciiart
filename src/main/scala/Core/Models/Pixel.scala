@@ -7,7 +7,7 @@ package Core.Models
  */
 trait Pixel {
   def toGrayscale: Int
-  def getValue: Any
+  def getValue: PixelValue
   def invertedPixel: Pixel
   def adjustBrightness(amount: Int): Pixel
 
@@ -23,7 +23,7 @@ case class RGBPixel(red: Int, green: Int, blue: Int) extends Pixel {
 
   override def toGrayscale: Int = (0.3 * red + 0.59 * green + 0.11 * blue).toInt
 
-  override def getValue: (Int, Int, Int) = (red, green, blue)
+  override def getValue: RGBPixelValue = RGBPixelValue(red, green, blue)
 
   override def invertedPixel: Pixel = RGBPixel(255 - red, 255 - green, 255 - blue)
 
@@ -39,7 +39,7 @@ case class GrayscalePixel(intensity: Int) extends Pixel {
 
   override def toGrayscale: Int = intensity
 
-  override def getValue: Int = intensity
+  override def getValue: GreyscalePixelValue = GreyscalePixelValue(intensity)
 
   override def invertedPixel: Pixel = GrayscalePixel(255 - intensity)
 
@@ -58,7 +58,7 @@ case class AlphaPixel(red: Int, green: Int, blue: Int, alpha: Int) extends Pixel
 
   override def toGrayscale: Int = rgbPixel.toGrayscale
 
-  override def getValue: (Int, Int, Int, Int) = (red, green, blue, alpha)
+  override def getValue: AlphaPixelValue = AlphaPixelValue(red, green, blue, alpha)
 
   override def invertedPixel: Pixel = AlphaPixel(255 - red, 255 - green, 255 - blue, alpha)
 
