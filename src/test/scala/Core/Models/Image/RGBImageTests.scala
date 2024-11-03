@@ -1,12 +1,12 @@
 package Core.Models.Image
 
-import Core.Errors.{BaseError, GeneralErrorCodes}
-import Core.Models.Pixel.RGBPixel
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 import sourcecode._
-
 import scala.compiletime.uninitialized
+
+import Core.Errors.{BaseError, GeneralErrorCodes}
+import Core.Models.Pixel.RGBPixel
 
 class RGBImageTests extends AnyFunSuite with BeforeAndAfterEach {
 
