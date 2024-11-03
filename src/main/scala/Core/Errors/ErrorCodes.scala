@@ -1,4 +1,5 @@
-package Services.Logging.Errors
+package Core.Errors
+
 sealed trait ErrorCodes {
   def code: Int
 }

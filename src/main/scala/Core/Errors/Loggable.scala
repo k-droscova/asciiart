@@ -1,9 +1,10 @@
-package Services.Logging
+package Core.Errors
+
+import sourcecode.{File, Line, Name}
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
-import sourcecode.{File, Line, Name}
 
 /**
  * Trait representing anything that can be logged.

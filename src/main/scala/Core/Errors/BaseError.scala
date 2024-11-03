@@ -1,6 +1,5 @@
-package Services.Logging.Errors
+package Core.Errors
 
-import Services.Logging.{LogContext, LogSeverity, LogSource, Loggable}
 import sourcecode.{File, Line, Name}
 
 /**

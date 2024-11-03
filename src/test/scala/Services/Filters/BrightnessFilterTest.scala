@@ -1,5 +1,5 @@
 package Services.Filters
 
-class BrigthnessFilter {
+class BrightnessFilterTest {
 
 }
