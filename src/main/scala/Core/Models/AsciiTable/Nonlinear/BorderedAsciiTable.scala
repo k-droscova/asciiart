@@ -10,7 +10,8 @@ import Core.Errors.{BaseError, ASCIIConversionErrorCodes, LogContext, LogSeverit
  * @param characters A string where each character represents an ASCII symbol for a grayscale range.
  * @param borders    A list of grayscale values that serve as upper bounds for each character range.
  *                   This list should have a length of `characters.length - 1`, defining the thresholds.
- * @throws BaseError If the number of borders does not match `characters.length - 1`, or if `characters` is empty.
+ * @throws BaseError If the number of borders does not match `characters.length - 1`,
+ *                   if `characters` is empty, or if any border is out of the 0-255 range.
  */
 class BorderedAsciiTable(characters: String, borders: List[Int]) extends AsciiTable {
 
@@ -26,6 +27,15 @@ class BorderedAsciiTable(characters: String, borders: List[Int]) extends AsciiTa
   if (borders.length != characters.length - 1) {
     throw BaseError(
       message = s"Invalid arguments for Bordered Ascii Table: character length ${characters.length} doesn't match expected borders length: ${borders.length + 1}",
+      severity = LogSeverity.Error,
+      context = LogContext.UI,
+      errorCode = ASCIIConversionErrorCodes.InvalidTable
+    )
+  }
+
+  if (borders.exists(border => border < 0 || border > 255)) {
+    throw BaseError(
+      message = "Invalid Bordered Ascii Table: all borders must be within the 0-255 range.",
       severity = LogSeverity.Error,
       context = LogContext.UI,
       errorCode = ASCIIConversionErrorCodes.InvalidTable
