@@ -1,6 +1,6 @@
 package Services.Filters
 
-import Core.Errors.{BaseError, FilterErrorCodes, GeneralErrorCodes, LogContext, LogSeverity}
+import Core.Errors.{BaseError, FilterErrorCodes, LogContext, LogSeverity}
 import Core.Models.Image.GrayscaleImage
 import Core.Models.Pixel.GrayscalePixel
 class RotateFilter(angle: Int) extends Filter {
