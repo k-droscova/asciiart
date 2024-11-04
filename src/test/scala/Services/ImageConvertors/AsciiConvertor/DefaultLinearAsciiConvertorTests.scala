@@ -13,6 +13,7 @@ class DefaultLinearAsciiConvertorTests extends AnyFunSuite with BeforeAndAfterEa
   var defaultConvertor: DefaultLinearAsciiConvertor = uninitialized
 
   override def beforeEach(): Unit = {
+    super.beforeEach()
     grayscaleImage = new GrayscaleImage(Vector(
       Vector(
         new GrayscalePixel(0), // Expected ' '
@@ -27,6 +28,7 @@ class DefaultLinearAsciiConvertorTests extends AnyFunSuite with BeforeAndAfterEa
   }
 
   override def afterEach(): Unit = {
+    super.afterEach()
     grayscaleImage = null
     defaultConvertor = null
   }
