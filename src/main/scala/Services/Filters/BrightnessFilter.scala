@@ -7,10 +7,10 @@ class BrightnessFilter(brightnessAdjustment: Int) extends Filter {
     val adjustedPixels = image.pixels.map { row =>
       row.map { pixel =>
         val newIntensity = (pixel.intensity + brightnessAdjustment).clamp(0, 255)
-        new GrayscalePixel(newIntensity)
+        GrayscalePixel(newIntensity)
       }
     }
-    new GrayscaleImage(adjustedPixels)
+    GrayscaleImage(adjustedPixels)
   }
 
   /**
