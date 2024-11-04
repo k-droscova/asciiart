@@ -42,13 +42,15 @@ class BorderedAsciiTable(characters: String, borders: List[Int]) extends AsciiTa
     )
   }
 
+  private val sortedBorders = borders.sorted
+
   /**
    * Maps a grayscale value to a character based on the predefined borders.
    * For grayscale values less than the first border, the first character is used;
    * for values greater than the last border, the last character is used.
    */
   def getAsciiCharacter(grayscale: Int): Char = {
-    val index = borders.indexWhere(grayscale < _) match {
+    val index = sortedBorders.indexWhere(grayscale < _) match {
       case -1 => characters.length - 1
       case i => i
     }

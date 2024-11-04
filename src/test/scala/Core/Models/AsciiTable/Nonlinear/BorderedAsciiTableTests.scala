@@ -144,4 +144,14 @@ class BorderedAsciiTableTests extends AnyFunSuite with BeforeAndAfterEach {
     assert(thrown.errorCode == ASCIIConversionErrorCodes.InvalidTable)
     assert(thrown.message.contains("all borders must be within the 0-255 range"))
   }
+
+  test("BorderedAsciiTable should map grayscale values correctly regardless of border order") {
+    val unorderedAsciiTable = new BorderedAsciiTable(" .:-=+*#%", List(192, 160, 64, 32, 128, 224, 96, 255))
+
+    val testValues = Vector(0, 31, 32, 63, 64, 95, 96, 127, 128, 159, 160, 191, 192, 223, 224, 254, 255)
+    for (value <- testValues) {
+      assert(asciiTable.getAsciiCharacter(value) == unorderedAsciiTable.getAsciiCharacter(value),
+        s"Mapping for grayscale value $value should match for both tables.")
+    }
+  }
 }

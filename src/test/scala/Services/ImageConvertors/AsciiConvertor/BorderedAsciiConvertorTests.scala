@@ -95,4 +95,16 @@ class BorderedAsciiConvertorTests extends AnyFunSuite with BeforeAndAfterEach {
     assert(thrown.errorCode == ASCIIConversionErrorCodes.InvalidTable)
     assert(thrown.message.contains("all borders must be within the 0-255 range"))
   }
+
+  test("BorderedAsciiConvertor should map grayscale values correctly regardless of border order") {
+    val unorderedConvertor = new BorderedAsciiConvertor(" .:-=+*#%", List(192, 160, 64, 32, 128, 224, 96, 255))
+    val asciiImage = borderedConvertor.convert(grayscaleImage)
+    val unorderedAsciiImage = unorderedConvertor.convert(grayscaleImage)
+    for (y <- 0 until grayscaleImage.getHeight) {
+      for (x <- 0 until grayscaleImage.getWidth) {
+        assert(asciiImage.getPixel(x, y).char == unorderedAsciiImage.getPixel(x, y).char,
+          s"Expected ${asciiImage.getPixel(x, y).char} but got ${unorderedAsciiImage.getPixel(x, y).char} at position ($x, $y)")
+      }
+    }
+  }
 }
