@@ -25,7 +25,6 @@ object ASCIIConversionErrorCodes {
 sealed trait FilterErrorCodes extends ErrorCodes
 object FilterErrorCodes {
   case object InvalidRotationAngle extends FilterErrorCodes { val code: Int = 300 }
-  case object InvalidScaleFactor extends FilterErrorCodes { val code: Int = 301 }
   case object FilterApplicationFailed extends FilterErrorCodes { val code: Int = 302 }
 }
 
