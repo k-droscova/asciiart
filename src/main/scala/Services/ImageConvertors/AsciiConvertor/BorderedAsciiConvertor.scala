@@ -1,5 +1,4 @@
 package Services.ImageConvertors.AsciiConvertor
 
-class BorderedAsciiConvertor {
-
-}
+import Core.Models.AsciiTable.Nonlinear.BorderedAsciiTable
+class BorderedAsciiConvertor(characters: String, borders: List[Int]) extends AsciiConvertor(new BorderedAsciiTable(characters, borders))
