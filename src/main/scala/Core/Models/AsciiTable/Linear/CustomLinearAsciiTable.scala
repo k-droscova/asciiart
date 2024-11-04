@@ -1,5 +1,3 @@
 package Core.Models.AsciiTable.Linear
 
-class CustomLinearAsciiTable {
-
-}
+class CustomLinearAsciiTable(customChars: String) extends LinearAsciiTable(customChars)
