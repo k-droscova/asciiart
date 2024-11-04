@@ -139,7 +139,7 @@ class BorderedAsciiTableTests extends AnyFunSuite with BeforeAndAfterEach {
 
   test("BorderedAsciiTable should throw an error if any border is out of the 0-255 range") {
     val thrown = intercept[BaseError] {
-      new BorderedAsciiTable(" .:", List(32, 300)) // Invalid: 300 is out of range
+      new BorderedAsciiTable(" .:", List(32, 300))
     }
     assert(thrown.errorCode == ASCIIConversionErrorCodes.InvalidTable)
     assert(thrown.message.contains("all borders must be within the 0-255 range"))
