@@ -3,6 +3,7 @@ package Core.Models.AsciiTable.Linear
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.BeforeAndAfterEach
 import scala.compiletime.uninitialized
+import Core.Errors.{BaseError, ASCIIConversionErrorCodes, LogContext, LogSeverity}
 
 class CustomLinearAsciiTableTests extends AnyFunSuite with BeforeAndAfterEach {
   var customTable: CustomLinearAsciiTable = uninitialized
@@ -221,5 +222,12 @@ class CustomLinearAsciiTableTests extends AnyFunSuite with BeforeAndAfterEach {
 
   test("CustomLinearAsciiTableTests should map grayscale value 255 to 'z'") {
     assert(customTable.getAsciiCharacter(255) == 'z')
+  }
+
+  test("CustomLinearAsciiTable should throw an error if characters are empty") {
+    val thrown = intercept[BaseError] {
+      new CustomLinearAsciiTable("")
+    }
+    assert(thrown.errorCode == ASCIIConversionErrorCodes.InvalidTable)
   }
 }
