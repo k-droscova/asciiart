@@ -21,7 +21,7 @@ class BrightnessFilterTests extends AnyFunSuite with BeforeAndAfterEach {
     filter = null
   }
 
-  test("BrightnessFilter should increase brightness by specified amount in 2x1 image") {
+  test("BrightnessFilter should increase brightness by specified amount in 1x2 image") {
     val originalImage = new GrayscaleImage(Vector(
       Vector(new GrayscalePixel(100)),
       Vector(new GrayscalePixel(150))
@@ -35,7 +35,7 @@ class BrightnessFilterTests extends AnyFunSuite with BeforeAndAfterEach {
     assert(resultImage.getHeight == 2)
   }
 
-  test("BrightnessFilter should decrease brightness by specified amount in 2x1 image") {
+  test("BrightnessFilter should decrease brightness by specified amount in 1x2 image") {
     val originalImage = new GrayscaleImage(Vector(
       Vector(new GrayscalePixel(100)),
       Vector(new GrayscalePixel(150))
@@ -65,7 +65,7 @@ class BrightnessFilterTests extends AnyFunSuite with BeforeAndAfterEach {
     assert(resultImage.getHeight == 3)
   }
 
-  test("BrightnessFilter should clamp intensity values to 255 in a 3x2 image") {
+  test("BrightnessFilter should clamp intensity values to 255 in a 2x3 image") {
     val originalImage = new GrayscaleImage(Vector(
       Vector(new GrayscalePixel(240), new GrayscalePixel(250)),
       Vector(new GrayscalePixel(200), new GrayscalePixel(210)),
@@ -84,7 +84,7 @@ class BrightnessFilterTests extends AnyFunSuite with BeforeAndAfterEach {
     assert(resultImage.getHeight == 3)
   }
 
-  test("BrightnessFilter should clamp intensity values to 0 in a 1x4 image") {
+  test("BrightnessFilter should clamp intensity values to 0 in a 4x1 image") {
     val originalImage = new GrayscaleImage(Vector(
       Vector(new GrayscalePixel(10), new GrayscalePixel(5), new GrayscalePixel(3), new GrayscalePixel(7))
     ))
@@ -97,5 +97,14 @@ class BrightnessFilterTests extends AnyFunSuite with BeforeAndAfterEach {
     assert(resultImage.getPixel(3, 0).intensity == 0)
     assert(resultImage.getWidth == 4)
     assert(resultImage.getHeight == 1)
+  }
+
+  test("BrightnessFilter should handle an empty image") {
+    grayscaleImage = new GrayscaleImage(Vector.empty)
+    filter = new BrightnessFilter(50)
+    val resultImage = filter.apply(grayscaleImage)
+
+    assert(resultImage.getWidth == 0)
+    assert(resultImage.getHeight == 0)
   }
 }
