@@ -10,7 +10,7 @@ object ImageLoadingErrorCodes {
   case object UnsupportedFormat extends ImageLoadingErrorCodes { val code: Int = 100 }
   case object FileNotFound extends ImageLoadingErrorCodes { val code: Int = 101 }
   case object FileUnreadable extends ImageLoadingErrorCodes { val code: Int = 102 }
-  case object InvalidImageData extends ImageLoadingErrorCodes { val code: Int = 103 }
+  case object InvalidImageDimensions extends ImageLoadingErrorCodes { val code: Int = 103 }
 }
 
 // ASCII conversion error codes (200-299)
