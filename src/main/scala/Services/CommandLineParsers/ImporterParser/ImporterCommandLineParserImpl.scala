@@ -15,6 +15,7 @@ class ImporterCommandLineParserImpl extends ImporterCommandLineParser {
   private def parseArguments(args: List[String]): (Option[String], Boolean) = {
     var imagePath: Option[String] = None
     var randomImageRequested = false
+    val quotedPathPattern = "^\".*\"$".r
 
     for (i <- args.indices) {
       args(i) match {
@@ -24,8 +25,8 @@ class ImporterCommandLineParserImpl extends ImporterCommandLineParser {
           }
           if (i + 1 < args.length) {
             val potentialPath = args(i + 1)
-            if (potentialPath.startsWith("\"") && potentialPath.endsWith("\"")) {
-              imagePath = Some(potentialPath.stripPrefix("\"").stripSuffix("\""))
+            if (quotedPathPattern.matches(potentialPath)) {
+              imagePath = Some(potentialPath.stripPrefix("\"").stripSuffix("\"").trim())
             } else {
               throw createBaseError("Image filepath must be specified in quotes after --image argument.")
             }

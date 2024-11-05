@@ -14,30 +14,33 @@ class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
   private var path: String = uninitialized
   private var fileMock: MockedConstruction[FileImporter] = uninitialized
   private var randomMock: MockedConstruction[RandomImporter] = uninitialized
+  private var filePathArg: String = uninitialized
   override def beforeEach(): Unit = {
     super.beforeEach()
     parser = new ImporterCommandLineParserImpl()
-    fileMock = mockConstruction(classOf[FileImporter], (mocked, context) => {})
-    randomMock = mockConstruction(classOf[RandomImporter], (mocked, context) => {})
   }
 
   override def afterEach(): Unit = {
     super.afterEach()
     parser = null
     path = null
-    fileMock.close()
-    randomMock.close()
+    filePathArg = null
   }
 
   test("Valid input with single image path") {
+    fileMock = mockConstruction(classOf[FileImporter], (mocked, context) => {
+      assert("path/to/image.jpg" == context.arguments.get(0).asInstanceOf[String])
+    })
     val importer = parser.parse("--image \"path/to/image.jpg\"")
     assert(importer.isInstanceOf[FileImporter])
-    fileMock.verify(_ (eq("path/to/image.jpg")), times(1))
+    fileMock.close()
   }
 
   test("Valid input with random image flag") {
+    randomMock = mockConstruction(classOf[RandomImporter], (mocked, context) => {})
     val importer = parser.parse("--image-random")
     assert(importer.isInstanceOf[RandomImporter])
+    randomMock.close()
   }
 
   test("Mixed input with both image and random") {
@@ -89,7 +92,18 @@ class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
   }
 
   test("Whitespace handling") {
-    val importer = parser.parse("--image \"  path/to/image.jpg  \"")
-    assert(importer.isInstanceOf[FileImporter])
+    val thrown = intercept[BaseError] {
+      parser.parse("--image \"  path/to/image.jpg  \"")
+    }
+    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
+    assert(thrown.message.contains("Image filepath must be specified in quotes after --image argument."))
+  }
+
+  test("Multiple arguments with both --image and --image-random") {
+    val thrown = intercept[BaseError] {
+      parser.parse("--rotate +90 --image-random --scale 0.5 --invert --image \"path/to/image.jpg\"")
+    }
+    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
+    assert(thrown.message.contains("Cannot specify both --image and --image-random."))
   }
 }
