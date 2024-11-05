@@ -1,5 +1,5 @@
 package Services.CommandLineParsers.ExporterParser
 
-trait ExporterCommandLineParser {
-
-}
+import Services.CommandLineParsers.CommandLineParser
+import Services.Exporters.Exporter
+trait ExporterCommandLineParser extends CommandLineParser[Exporter] {}
