@@ -24,8 +24,9 @@ abstract class Image[P <: Pixel](val pixels: Vector[Vector[P]]) {
 
   /**
    * The height of the image, calculated from the number of rows in the `pixels` Vector.
+   * If the image has empty rows, height is set to 0 regardless of how many rows there are.
    */
-  private val height: Int = pixels.size
+  private val height: Int = if (width > 0) pixels.size else 0
 
   /**
    * Retrieves the pixel at the specified (x, y) coordinates.
