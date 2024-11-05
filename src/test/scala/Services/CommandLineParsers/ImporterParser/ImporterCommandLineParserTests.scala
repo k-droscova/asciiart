@@ -14,7 +14,6 @@ class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
   private var path: String = uninitialized
   private var fileMock: MockedConstruction[FileImporter] = uninitialized
   private var randomMock: MockedConstruction[RandomImporter] = uninitialized
-  private var filePathArg: String = uninitialized
   override def beforeEach(): Unit = {
     super.beforeEach()
     parser = new ImporterCommandLineParserImpl()
@@ -24,7 +23,6 @@ class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
     super.afterEach()
     parser = null
     path = null
-    filePathArg = null
   }
 
   test("Valid input with single image path") {

@@ -26,7 +26,7 @@ class ImporterCommandLineParserImpl extends ImporterCommandLineParser {
           if (i + 1 < args.length) {
             val potentialPath = args(i + 1)
             if (quotedPathPattern.matches(potentialPath)) {
-              imagePath = Some(potentialPath.stripPrefix("\"").stripSuffix("\"").trim())
+              imagePath = Some(potentialPath.stripPrefix("\"").stripSuffix("\""))
             } else {
               throw createBaseError("Image filepath must be specified in quotes after --image argument.")
             }
