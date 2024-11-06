@@ -29,7 +29,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
     brightnessMock = mockConstruction(classOf[BrightnessFilter], (mocked, context) => {
       assert(5 == context.arguments.get(0).asInstanceOf[Int])
     })
-    val filters = parser.parse("--brightness 5")
+    val filters = parser.parse(Array("--brightness", "5"))
     assert(filters.length == 1)
     assert(filters.head.isInstanceOf[BrightnessFilter])
     brightnessMock.close()
@@ -39,7 +39,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
     brightnessMock = mockConstruction(classOf[BrightnessFilter], (mocked, context) => {
       assert(5 == context.arguments.get(0).asInstanceOf[Int])
     })
-    val filters = parser.parse("--brightness +5")
+    val filters = parser.parse(Array("--brightness", "+5"))
     assert(filters.length == 1)
     assert(filters.head.isInstanceOf[BrightnessFilter])
     brightnessMock.close()
@@ -49,7 +49,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
     brightnessMock = mockConstruction(classOf[BrightnessFilter], (mocked, context) => {
       assert(-5 == context.arguments.get(0).asInstanceOf[Int])
     })
-    val filters = parser.parse("--brightness -5")
+    val filters = parser.parse(Array("--brightness", "-5"))
     assert(filters.length == 1)
     assert(filters.head.isInstanceOf[BrightnessFilter])
     brightnessMock.close()
@@ -57,7 +57,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
 
   test("Valid input with invert filter") {
     invertMock = mockConstruction(classOf[InvertFilter], (mocked, context) => {})
-    val filters = parser.parse("--invert")
+    val filters = parser.parse(Array("--invert"))
     assert(filters.length == 1)
     assert(filters.head.isInstanceOf[InvertFilter])
     invertMock.close()
@@ -67,7 +67,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
     rotateMock = mockConstruction(classOf[RotateFilter], (mocked, context) => {
       assert(90 == context.arguments.get(0).asInstanceOf[Int])
     })
-    val filters = parser.parse("--rotate 90")
+    val filters = parser.parse(Array("--rotate", "90"))
     assert(filters.length == 1)
     assert(filters.head.isInstanceOf[RotateFilter])
     rotateMock.close()
@@ -77,7 +77,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
     rotateMock = mockConstruction(classOf[RotateFilter], (mocked, context) => {
       assert(90 == context.arguments.get(0).asInstanceOf[Int])
     })
-    val filters = parser.parse("--rotate +90")
+    val filters = parser.parse(Array("--rotate", "+90"))
     assert(filters.length == 1)
     assert(filters.head.isInstanceOf[RotateFilter])
     rotateMock.close()
@@ -87,7 +87,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
     rotateMock = mockConstruction(classOf[RotateFilter], (mocked, context) => {
       assert(-90 == context.arguments.get(0).asInstanceOf[Int])
     })
-    val filters = parser.parse("--rotate -90")
+    val filters = parser.parse(Array("--rotate", "-90"))
     assert(filters.length == 1)
     assert(filters.head.isInstanceOf[RotateFilter])
     rotateMock.close()
@@ -95,7 +95,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
 
   test("Invalid brightness value without argument") {
     val thrown = intercept[BaseError] {
-      parser.parse("--brightness")
+      parser.parse(Array("--brightness"))
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Brightness value must be specified after --brightness."))
@@ -103,7 +103,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
 
   test("Invalid brightness value with non-integer") {
     val thrown = intercept[BaseError] {
-      parser.parse("--brightness 123.45")
+      parser.parse(Array("--brightness", "123.45"))
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Invalid brightness argument, expected pattern: (+-)Num where Num is integer"))
@@ -111,7 +111,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
 
   test("Invalid rotation value without argument") {
     val thrown = intercept[BaseError] {
-      parser.parse("--rotate")
+      parser.parse(Array("--rotate"))
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Rotation value must be specified after --rotate."))
@@ -119,7 +119,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
 
   test("Invalid rotation value with non-integer") {
     val thrown = intercept[BaseError] {
-      parser.parse("--rotate -90.123")
+      parser.parse(Array("--rotate", "-90.123"))
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Invalid rotation argument, expected pattern: (+-)Num where Num is integer dividable by 90"))
@@ -127,7 +127,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
 
   test("Mixed input with both brightness and invalid argument") {
     val thrown = intercept[BaseError] {
-      parser.parse("--brightness +5 --rotate invalid")
+      parser.parse(Array("--brightness", "+5", "--rotate", "invalid"))
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Invalid rotation argument, expected pattern: (+-)Num where Num is integer dividable by 90"))
@@ -142,7 +142,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
       assert(90 == context.arguments.get(0).asInstanceOf[Int])
     })
 
-    val filters = parser.parse("--brightness 5 --invert --rotate +90")
+    val filters = parser.parse(Array("--brightness", "5", "--invert", "--rotate", "+90"))
     assert(filters.length == 3)
     assert(filters.head.isInstanceOf[BrightnessFilter])
     assert(filters(1).isInstanceOf[InvertFilter])
@@ -162,7 +162,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
     })
     invertMock = mockConstruction(classOf[InvertFilter], (mocked, context) => {})
 
-    val filters = parser.parse("--rotate 180 --invert --brightness -10")
+    val filters = parser.parse(Array("--rotate", "180", "--invert", "--brightness", "-10"))
     assert(filters.length == 3)
     assert(filters.head.isInstanceOf[RotateFilter])
     assert(filters(1).isInstanceOf[InvertFilter])
@@ -174,7 +174,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
   }
 
   test("Valid input with multiple repeated filters") {
-    val filters = parser.parse("--brightness 5 --invert --rotate +90 --brightness 10")
+    val filters = parser.parse(Array("--brightness", "5", "--invert", "--rotate", "+90", "--brightness", "10"))
     assert(filters.length == 4)
     assert(filters.head.isInstanceOf[BrightnessFilter])
     assert(filters(1).isInstanceOf[InvertFilter])
@@ -184,7 +184,7 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
 
   test("Propagates error from rotate filter constructor when the integer argument is invalid") {
     val thrown = intercept[BaseError] {
-      val filters = parser.parse("--rotate +45")
+      parser.parse(Array("--rotate", "+45"))
     }
     assert(thrown.errorCode == FilterErrorCodes.InvalidRotationAngle)
     assert(thrown.message.contains("Angle 45 is invalid. Angle must be a multiple of 90 degrees."))

@@ -29,7 +29,7 @@ class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
     fileMock = mockConstruction(classOf[FileImporter], (mocked, context) => {
       assert("path/to/image.jpg" == context.arguments.get(0).asInstanceOf[String])
     })
-    val importer = parser.parse("--image path/to/image.jpg")
+    val importer = parser.parse(Array("--image", "path/to/image.jpg"))
     assert(importer.isInstanceOf[FileImporter])
     fileMock.close()
   }
@@ -38,21 +38,21 @@ class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
     fileMock = mockConstruction(classOf[FileImporter], (mocked, context) => {
       assert("path/to/image.jpg" == context.arguments.get(0).asInstanceOf[String])
     })
-    val importer = parser.parse("--image \"         path/to/image.jpg    \"")
+    val importer = parser.parse(Array("--image", "         path/to/image.jpg    "))
     assert(importer.isInstanceOf[FileImporter])
     fileMock.close()
   }
 
   test("Valid input with random image flag") {
     randomMock = mockConstruction(classOf[RandomImporter], (mocked, context) => {})
-    val importer = parser.parse("--image-random")
+    val importer = parser.parse(Array("--image-random"))
     assert(importer.isInstanceOf[RandomImporter])
     randomMock.close()
   }
 
   test("Mixed input with both image and random") {
     val thrown = intercept[BaseError] {
-      parser.parse("--image \"path/to/image.jpg\" --image-random")
+      parser.parse(Array("--image", "path/to/image.jpg", "--image-random"))
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Cannot specify both --image and --image-random."))
@@ -60,7 +60,7 @@ class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
 
   test("Multiple --image arguments") {
     val thrown = intercept[BaseError] {
-      parser.parse("--image \"path/to/image1.jpg\" --image \"path/to/image2.jpg\"")
+      parser.parse(Array("--image", "path/to/image1.jpg", "--image", "path/to/image2.jpg"))
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Only one --image argument is allowed."))
@@ -68,7 +68,7 @@ class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
 
   test("No arguments") {
     val thrown = intercept[BaseError] {
-      parser.parse("")
+      parser.parse(Array())
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("You must specify either --image or --image-random."))
@@ -76,7 +76,7 @@ class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
 
   test("Invalid flag") {
     val thrown = intercept[BaseError] {
-      parser.parse("--invalidFlag")
+      parser.parse(Array("--invalidFlag"))
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("You must specify either --image or --image-random."))
@@ -84,23 +84,15 @@ class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
 
   test("Only --image without path") {
     val thrown = intercept[BaseError] {
-      parser.parse("--image")
+      parser.parse(Array("--image"))
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Image filepath was not specified after --image argument."))
   }
 
-  test("--image with non-string path") {
-    val thrown = intercept[BaseError] {
-      parser.parse("--image NonStringPath")
-    }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Image filepath must be specified in quotes after --image argument."))
-  }
-
   test("Multiple arguments with both --image and --image-random") {
     val thrown = intercept[BaseError] {
-      parser.parse("--rotate +90 --image-random --scale 0.5 --invert --image \"path/to/image.jpg\"")
+      parser.parse(Array("--rotate", "+90", "--image-random", "--scale", "0.5", "--invert", "--image", "path/to/image.jpg"))
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Cannot specify both --image and --image-random."))

@@ -28,7 +28,7 @@ class ExporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
     fileMock = mockConstruction(classOf[FileExporter], (mocked, context) => {
       assert("path/to/output.txt" == context.arguments.get(0).asInstanceOf[String])
     })
-    val exporter = parser.parse("--output-file \"path/to/output.txt\"")
+    val exporter = parser.parse(Array("--output-file", "path/to/output.txt"))
     assert(exporter.isInstanceOf[FileExporter])
     fileMock.close()
   }
@@ -37,21 +37,21 @@ class ExporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
     fileMock = mockConstruction(classOf[FileExporter], (mocked, context) => {
       assert("path/to/output.txt" == context.arguments.get(0).asInstanceOf[String])
     })
-    val exporter = parser.parse("--output-file \"       path/to/output.txt    \"")
+    val exporter = parser.parse(Array("--output-file", "       path/to/output.txt    "))
     assert(exporter.isInstanceOf[FileExporter])
     fileMock.close()
   }
 
   test("Valid input with output to console") {
     consoleMock = mockConstruction(classOf[ConsoleExporter], (mocked, context) => {})
-    val exporter = parser.parse("--output-console")
+    val exporter = parser.parse(Array("--output-console"))
     assert(exporter.isInstanceOf[ConsoleExporter])
     consoleMock.close()
   }
 
   test("Mixed input with both output file and console") {
     val thrown = intercept[BaseError] {
-      parser.parse("--output-file \"path/to/output.txt\" --output-console")
+      parser.parse(Array("--output-file", "path/to/output.txt", "--output-console"))
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Cannot specify both --output-file and --output-console."))
@@ -59,7 +59,7 @@ class ExporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
 
   test("Multiple --output-file arguments") {
     val thrown = intercept[BaseError] {
-      parser.parse("--output-file \"path/to/output.txt\" --output-file \"another/path/to/output.txt\"")
+      parser.parse(Array("--output-file", "path/to/output.txt", "--output-file", "another/path/to/output.txt"))
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Only one --output-file argument is allowed."))
@@ -67,7 +67,7 @@ class ExporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
 
   test("No arguments") {
     val thrown = intercept[BaseError] {
-      parser.parse("")
+      parser.parse(Array.empty)
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("You must specify either --output-file or --output-console."))
@@ -75,7 +75,7 @@ class ExporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
 
   test("Invalid flag") {
     val thrown = intercept[BaseError] {
-      parser.parse("--invalidFlag")
+      parser.parse(Array("--invalidFlag"))
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("You must specify either --output-file or --output-console."))
@@ -83,23 +83,16 @@ class ExporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
 
   test("Only --output-file without path") {
     val thrown = intercept[BaseError] {
-      parser.parse("--output-file")
+      parser.parse(Array("--output-file"))
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Output filepath was not specified after --output-file argument."))
   }
-
-  test("--output-file with non-string path") {
-    val thrown = intercept[BaseError] {
-      parser.parse("--output-file NonStringPath")
-    }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Output filepath must be specified in quotes after --output-file argument."))
-  }
+  
 
   test("Multiple arguments with both --output-file and --output-console") {
     val thrown = intercept[BaseError] {
-      parser.parse("--rotate +90 --output-file \"path/to/output.txt\" --image-random --output-console")
+      parser.parse(Array("--rotate", "+90", "--output-file", "path/to/output.txt", "--image-random", "--output-console"))
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Cannot specify both --output-file and --output-console."))

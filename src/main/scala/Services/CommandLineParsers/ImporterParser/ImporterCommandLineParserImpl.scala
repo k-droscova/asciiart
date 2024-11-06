@@ -47,7 +47,7 @@ class ImporterCommandLineParserImpl extends ImporterCommandLineParser {
             throw createBaseError("Only one --image argument is allowed.")
           }
           if (i + 1 < args.length)
-            imagePath = Some(args(i+1))
+            imagePath = Some(args(i+1).trim)
           else {
             throw createBaseError("Image filepath was not specified after --image argument.")
           }

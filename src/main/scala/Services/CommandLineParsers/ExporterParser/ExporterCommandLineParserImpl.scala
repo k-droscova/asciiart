@@ -44,7 +44,7 @@ class ExporterCommandLineParserImpl extends ExporterCommandLineParser {
             throw createBaseError("Only one --output-file argument is allowed.")
           }
           if (i + 1 < args.length) {
-            outputPath = Some(args(i+1))
+            outputPath = Some(args(i+1).trim)
           } else {
             throw createBaseError("Output filepath was not specified after --output-file argument.")
           }
