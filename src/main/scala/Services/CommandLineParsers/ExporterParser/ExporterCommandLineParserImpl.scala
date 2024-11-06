@@ -23,22 +23,19 @@ class ExporterCommandLineParserImpl extends ExporterCommandLineParser {
    * @throws BaseError if:
    *   - More than one `--output-file` argument is provided.
    *   - The output file path is not specified after the `--output-file` argument.
-   *   - The output file path is not enclosed in quotes.
    *   - More than one `--output-console` argument is specified.
    *   - Both `--output-file` and `--output-console` are specified together.
    *   - Neither `--output-file` nor `--output-console` is provided.
    */
-  override def parse(input: String): Exporter = {
-    val args = splitArguments(input)
+  override def parse(args: Array[String]): Exporter = {
     val (outputPath, outputToConsoleRequested) = parseArguments(args)
     validateArguments(outputPath, outputToConsoleRequested)
     createExporter(outputPath, outputToConsoleRequested)
   }
 
-  private def parseArguments(args: List[String]): (Option[String], Boolean) = {
+  private def parseArguments(args: Array[String]): (Option[String], Boolean) = {
     var outputPath: Option[String] = None
     var outputToConsoleRequested = false
-    val quotedPathPattern = "^\".*\"$".r
 
     for (i <- args.indices) {
       args(i) match {
@@ -47,12 +44,7 @@ class ExporterCommandLineParserImpl extends ExporterCommandLineParser {
             throw createBaseError("Only one --output-file argument is allowed.")
           }
           if (i + 1 < args.length) {
-            val potentialPath = args(i + 1)
-            if (quotedPathPattern.matches(potentialPath)) {
-              outputPath = Some(extractQuotedInputAndTrim(potentialPath))
-            } else {
-              throw createBaseError("Output filepath must be specified in quotes after --output-file argument.")
-            }
+            outputPath = Some(args(i+1))
           } else {
             throw createBaseError("Output filepath was not specified after --output-file argument.")
           }

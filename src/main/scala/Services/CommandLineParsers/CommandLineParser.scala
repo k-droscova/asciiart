@@ -18,35 +18,5 @@ trait CommandLineParser[T] {
    *              that need to be parsed based on the implementation.
    * @return An instance of type T based on the parsed arguments.
    */
-  def parse(input: String): T
-
-  /**
-   * Splits the input string into individual arguments, preserving quoted strings.
-   *
-   * @param input The command line input string to be split.
-   * @return A list of strings representing the individual arguments, including quoted arguments as single entries.
-   */
-  protected def splitArguments(input: String): List[String] = {
-    val pattern = """(\"[^\"]*\"|\S+)""".r
-
-    pattern.findAllIn(input).matchData.map { m =>
-      m.matched
-    }.toList
-  }
-
-  /**
-   * Extracts the inner content of a quoted string by removing the surrounding quotes.
-   *
-   * @param quotedInput The input string that is expected to be enclosed in quotes.
-   * @return The content of the quoted string without the surrounding quotes.
-   */
-  protected def extractQuotedInput(quotedInput: String) : String = quotedInput.stripPrefix("\"").stripSuffix("\"")
-
-  /**
-   * Extracts the inner content of a quoted string, trimming any leading or trailing whitespace.
-   *
-   * @param quotedInput The input string that is expected to be enclosed in quotes.
-   * @return The content of the quoted string without the surrounding quotes and trimmed of whitespace.
-   */
-  protected def extractQuotedInputAndTrim(quotedInput: String) : String = extractQuotedInput(quotedInput).trim
+  def parse(args: Array[String]): T
 }

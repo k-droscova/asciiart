@@ -27,8 +27,7 @@ class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
    *   - Missing characters after `--table=bordered` argument.
    *   - Invalid format for border values (should be in the format: [int,int,...]).
    */
-  override def parse(input: String): AsciiConvertor = {
-    val args = splitArguments(input)
+  override def parse(args: Array[String]): AsciiConvertor = {
     parseArguments(args)
   }
 
@@ -39,9 +38,8 @@ class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
    * @return An instance of AsciiConvertor.
    * @throws BaseError if more than one table type is specified or if necessary arguments are missing.
    */
-  private def parseArguments(args: List[String]): AsciiConvertor = {
+  private def parseArguments(args: Array[String]): AsciiConvertor = {
     var customChars: Option[String] = None
-    val doubleQuotePattern = """\"(.*?)\"""".r
     var tableType: Option[String] = None
     var borders: List[Int] = List()
 
@@ -52,10 +50,7 @@ class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
             throw createBaseError("Only one table can be specified")
           }
           if (i + 1 < args.length) {
-            val potentialChars = args(i+1)
-            if (!doubleQuotePattern.matches(potentialChars))
-              throw createBaseError("Custom characters must be specified in quotes after --custom-table argument.")
-            customChars = Some(extractQuotedInput(potentialChars))
+            customChars = Some(args(i+1))
           } else {
             throw createBaseError("Custom characters must be specified after --custom-table argument.")
           }
@@ -67,10 +62,7 @@ class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
           tableType = Some(arg.stripPrefix("--table="))
           if (tableType.get == "bordered") {
             if (i + 1 < args.length) {
-              val potentialChars = args(i + 1)
-              if (!doubleQuotePattern.matches(potentialChars))
-                throw createBaseError("Characters must be specified in quotes after --table=bordered argument.")
-              customChars = Some(extractQuotedInput(potentialChars))
+              customChars = Some(args(i+1))
             } else {
               throw createBaseError("Custom characters must be specified after --table=bordered argument.")
             }
@@ -100,7 +92,7 @@ class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
    * @return A list of integers representing the border values.
    * @throws BaseError if the border argument is malformed or not specified.
    */
-  private def parseBorders(args: List[String], currentIndex: Int): List[Int] = {
+  private def parseBorders(args: Array[String], currentIndex: Int): List[Int] = {
     // Regex to match the border format [int,int,...]
     val borderPattern = """^\[([+-]?\d+(,[+-]?\d+)*)?\]$""".r
     val potentialBordersInd = currentIndex + 1
@@ -115,7 +107,7 @@ class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
     val borderValuesArg = args(potentialBordersInd).stripPrefix("[").stripSuffix("]")
     // Split by commas and convert to List[Int]
     val borderValues = borderValuesArg.split(",").toList.flatMap { value =>
-      val trimmedValue = value.trim.stripPrefix("+")
+      val trimmedValue = value.stripPrefix("+")
       trimmedValue.toIntOption match {
         case Some(intValue) => Some(intValue)
         case None => None

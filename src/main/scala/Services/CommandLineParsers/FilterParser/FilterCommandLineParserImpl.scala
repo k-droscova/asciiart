@@ -45,12 +45,11 @@ class FilterCommandLineParserImpl extends FilterCommandLineParser {
    *                   delegates the parsing to the `parseArguments` method, which handles the logic for
    *                   validating and creating the filter instances.
    */
-  override def parse(input: String): List[Filter] = {
-    val args = splitArguments(input)
+  override def parse(args: Array[String]): List[Filter] = {
     parseArguments(args)
   }
 
-  private def parseArguments(args: List[String]): List[Filter] = {
+  private def parseArguments(args: Array[String]): List[Filter] = {
     var filters: List[Filter] = List()
     val numberPattern = "^[+-]?\\d+$".r
 

@@ -29,7 +29,7 @@ class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
     fileMock = mockConstruction(classOf[FileImporter], (mocked, context) => {
       assert("path/to/image.jpg" == context.arguments.get(0).asInstanceOf[String])
     })
-    val importer = parser.parse("--image \"path/to/image.jpg\"")
+    val importer = parser.parse("--image path/to/image.jpg")
     assert(importer.isInstanceOf[FileImporter])
     fileMock.close()
   }

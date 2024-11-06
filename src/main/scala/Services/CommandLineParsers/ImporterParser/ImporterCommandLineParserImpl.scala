@@ -22,26 +22,23 @@ class ImporterCommandLineParserImpl extends ImporterCommandLineParser {
    *
    * @param input A string representing the command line arguments. The input can include options for
    *              specifying an image path or requesting a random image. Example input:
-   *              "--image \"path/to/image.jpg\""
+   *              "--image "path/to/image.jpg"
    * @return An instance of `Importer` based on the parsed arguments. This could be either a `FileImporter`
    *         for the specified path or a `RandomImporter` if the random image argument is used.
    * @throws BaseError if the input is invalid, if required arguments are missing, or if conflicting
    *                   options are provided. Specific cases include:
    *                   - Missing path for `--image`
    *                   - Attempting to specify both `--image` and `--image-random`
-   *                   - Invalid path format not enclosed in quotes for `--image`
    */
-  override def parse(input: String): Importer = {
-    val args = splitArguments(input)
+  override def parse(args: Array[String]): Importer = {
     val (imagePath, randomImageRequested) = parseArguments(args)
     validateArguments(imagePath, randomImageRequested)
     createImporter(imagePath, randomImageRequested)
   }
 
-  private def parseArguments(args: List[String]): (Option[String], Boolean) = {
+  private def parseArguments(args: Array[String]): (Option[String], Boolean) = {
     var imagePath: Option[String] = None
     var randomImageRequested = false
-    val quotedPathPattern = "^\".*\"$".r
 
     for (i <- args.indices) {
       args(i) match {
@@ -49,14 +46,9 @@ class ImporterCommandLineParserImpl extends ImporterCommandLineParser {
           if (imagePath.isDefined) {
             throw createBaseError("Only one --image argument is allowed.")
           }
-          if (i + 1 < args.length) {
-            val potentialPath = args(i + 1)
-            if (quotedPathPattern.matches(potentialPath)) {
-              imagePath = Some(extractQuotedInputAndTrim(potentialPath))
-            } else {
-              throw createBaseError("Image filepath must be specified in quotes after --image argument.")
-            }
-          } else {
+          if (i + 1 < args.length)
+            imagePath = Some(args(i+1))
+          else {
             throw createBaseError("Image filepath was not specified after --image argument.")
           }
 
