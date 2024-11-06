@@ -1,0 +1,3 @@
+package UI class ConsoleViewModel {
+
+}

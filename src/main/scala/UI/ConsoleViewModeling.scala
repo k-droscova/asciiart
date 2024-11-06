@@ -1,0 +1,5 @@
+package UI
+
+trait ConsoleViewModeling {
+
+}
