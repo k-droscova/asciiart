@@ -1,0 +1,4 @@
+package Services.ImageConvertors.AsciiConvertor
+
+import Core.Models.AsciiTable.Linear.BourkeLinearAsciiTable
+class BourkeLinearAsciiConvertor extends AsciiConvertor(new BourkeLinearAsciiTable)

@@ -1,0 +1,5 @@
+package Services.CommandLineParsers.AsciiTableParser
+
+import Services.CommandLineParsers.CommandLineParser
+import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
+trait AsciiTableCommandLineParser extends CommandLineParser[AsciiConvertor]
