@@ -2,12 +2,43 @@ package Services.CommandLineParsers.AsciiTableParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes, LogSeverity, LogContext}
 import Services.ImageConvertors.AsciiConvertor.*
+
+/**
+ * AsciiTableCommandLineParserImpl is responsible for parsing command line input related to
+ * ASCII table conversions and returning the appropriate AsciiConvertor based on user specifications.
+ */
 class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
+
+  /**
+   * Parses the input string containing command line arguments and returns the corresponding AsciiConvertor.
+   *
+   * Supported arguments:
+   * - `--custom-table "custom characters"`: Specifies a custom ASCII character set for the conversion.
+   * - `--table=default`: Uses the default ASCII table for conversion.
+   * - `--table=bourke`: Uses the Bourke ASCII table for conversion.
+   * - `--table=bordered "custom characters" [int,int,...]`: Specifies a bordered ASCII table with a custom character set and border values.
+   *
+   * @param input A string representing the command line arguments.
+   * @return An instance of AsciiConvertor based on the parsed arguments.
+   * @throws BaseError if:
+   *   - More than one table type is specified (e.g., both `--custom-table` and `--table=default`).
+   *   - Invalid table type is provided (e.g., `--table=invalid`).
+   *   - Missing characters after `--custom-table` argument.
+   *   - Missing characters after `--table=bordered` argument.
+   *   - Invalid format for border values (should be in the format: [int,int,...]).
+   */
   override def parse(input: String): AsciiConvertor = {
     val args = splitArguments(input)
     parseArguments(args)
   }
 
+  /**
+   * Processes the list of parsed arguments to determine the appropriate AsciiConvertor to create.
+   *
+   * @param args A list of strings representing the parsed command line arguments.
+   * @return An instance of AsciiConvertor.
+   * @throws BaseError if more than one table type is specified or if necessary arguments are missing.
+   */
   private def parseArguments(args: List[String]): AsciiConvertor = {
     var customChars: Option[String] = None
     val doubleQuotePattern = """\"(.*?)\"""".r
@@ -61,6 +92,14 @@ class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
     }
   }
 
+  /**
+   * Parses border values from the command line arguments for the BorderedAsciiConvertor
+   *
+   * @param args         A list of strings representing the parsed command line arguments.
+   * @param currentIndex The index where the border values are expected.
+   * @return A list of integers representing the border values.
+   * @throws BaseError if the border argument is malformed or not specified.
+   */
   private def parseBorders(args: List[String], currentIndex: Int): List[Int] = {
     // Regex to match the border format [int,int,...]
     val borderPattern = """^\[([+-]?\d+(,[+-]?\d+)*)?\]$""".r

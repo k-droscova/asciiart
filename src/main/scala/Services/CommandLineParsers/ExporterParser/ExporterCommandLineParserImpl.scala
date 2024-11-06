@@ -3,7 +3,31 @@ package Services.CommandLineParsers.ExporterParser
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext, LogSeverity}
 import Services.Exporters.Exporter
 import Services.Exporters.{FileExporter, ConsoleExporter}
+
+/**
+ * The `ExporterCommandLineParserImpl` class is responsible for parsing command line arguments related to
+ * output options for exporting ASCII art. It determines whether to output to a file or to the console based
+ * on the provided arguments. This class implements the `ExporterCommandLineParser` trait.
+ */
 class ExporterCommandLineParserImpl extends ExporterCommandLineParser {
+
+  /**
+   * Parses the input string containing command line arguments and returns the corresponding Exporter.
+   *
+   * Supported arguments:
+   * - `--output-file "path"`: Specifies the file path where the output will be saved. The path must be enclosed in quotes.
+   * - `--output-console`: Specifies that the output should be printed to the console.
+   *
+   * @param input A string representing the command line arguments.
+   * @return An instance of Exporter based on the parsed arguments.
+   * @throws BaseError if:
+   *   - More than one `--output-file` argument is provided.
+   *   - The output file path is not specified after the `--output-file` argument.
+   *   - The output file path is not enclosed in quotes.
+   *   - More than one `--output-console` argument is specified.
+   *   - Both `--output-file` and `--output-console` are specified together.
+   *   - Neither `--output-file` nor `--output-console` is provided.
+   */
   override def parse(input: String): Exporter = {
     val args = splitArguments(input)
     val (outputPath, outputToConsoleRequested) = parseArguments(args)

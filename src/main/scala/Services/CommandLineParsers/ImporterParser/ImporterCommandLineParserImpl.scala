@@ -4,7 +4,33 @@ import Core.Errors.{BaseError, GeneralErrorCodes, LogContext, LogSeverity}
 import Services.Importers.{FileImporter, RandomImporter}
 import Services.Importers.Importer
 
+/**
+ * Parses command line arguments related to importing images.
+ *
+ * This class implements the `ImporterCommandLineParser` trait, providing functionality
+ * to parse user input and return the appropriate `Importer` instance based on the arguments.
+ *
+ * Supported command line arguments:
+ * - `--image "<path>"`: Specifies the path to the image file. The path must be enclosed in quotes.
+ * - `--image-random`: Indicates that a random image should be used instead of a specified file.
+ *
+ * If both `--image` and `--image-random` are provided, or if no valid input is given, an error will be thrown.
+ */
 class ImporterCommandLineParserImpl extends ImporterCommandLineParser {
+  /**
+   * Parses the input string containing command line arguments and returns the corresponding `Importer`.
+   *
+   * @param input A string representing the command line arguments. The input can include options for
+   *              specifying an image path or requesting a random image. Example input:
+   *              "--image \"path/to/image.jpg\""
+   * @return An instance of `Importer` based on the parsed arguments. This could be either a `FileImporter`
+   *         for the specified path or a `RandomImporter` if the random image argument is used.
+   * @throws BaseError if the input is invalid, if required arguments are missing, or if conflicting
+   *                   options are provided. Specific cases include:
+   *                   - Missing path for `--image`
+   *                   - Attempting to specify both `--image` and `--image-random`
+   *                   - Invalid path format not enclosed in quotes for `--image`
+   */
   override def parse(input: String): Importer = {
     val args = splitArguments(input)
     val (imagePath, randomImageRequested) = parseArguments(args)
