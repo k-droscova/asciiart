@@ -36,7 +36,10 @@ class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
           tableType = Some(arg.stripPrefix("--table="))
           if (tableType.get == "bordered") {
             if (i + 1 < args.length) {
-              customChars = Some(args(i + 1))
+              val potentialChars = args(i + 1)
+              if (!doubleQuotePattern.matches(potentialChars))
+                throw createBaseError("Characters must be specified in quotes after --table=bordered argument.")
+              customChars = Some(extractQuotedInput(potentialChars))
             } else {
               throw createBaseError("Custom characters must be specified after --table=bordered argument.")
             }
@@ -52,25 +55,32 @@ class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
       case (None, None) => new DefaultLinearAsciiConvertor()
       case (None, Some("default")) => new DefaultLinearAsciiConvertor()
       case (None, Some("bourke")) => new BourkeLinearAsciiConvertor()
-      case (Some(chars), Some("bordered")) => new BorderedAsciiConvertor(chars, borders)
+      case (Some(chars), Some("bordered")) =>
+        println(s"Initializing Bordered with ${chars} and ${borders}")
+        new BorderedAsciiConvertor(chars, borders)
       case _ => throw createBaseError("Invalid table argument.")
     }
   }
 
   private def parseBorders(args: List[String], currentIndex: Int): List[Int] = {
+    // Regex to match the border format [int,int,...]
     val borderPattern = """^\[([+-]?\d+(,[+-]?\d+)*)?\]$""".r
-    if (currentIndex + 1 >= args.length) {
+    val potentialBordersInd = currentIndex + 1
+
+    // Check if the next argument exists and matches the pattern
+    if (potentialBordersInd >= args.length) {
       throw createBaseError("Border characters must be specified after --table=bordered argument.")
-    } else if (!borderPattern.matches(args(currentIndex + 1))) {
+    } else if (!borderPattern.matches(args(potentialBordersInd))) {
       throw createBaseError("Border characters must be be in this pattern: [int,int,int,...]")
     }
-    val borderValuesArg = args(currentIndex + 1).stripPrefix("[").stripSuffix("]")
+    // Extract the argument and remove brackets
+    val borderValuesArg = args(potentialBordersInd).stripPrefix("[").stripSuffix("]")
+    // Split by commas and convert to List[Int]
     val borderValues = borderValuesArg.split(",").toList.flatMap { value =>
       val trimmedValue = value.trim.stripPrefix("+")
-      if (trimmedValue.matches("""^[+-]?\d+$""")) {
-        Some(trimmedValue.toInt)
-      } else {
-        None
+      trimmedValue.toIntOption match {
+        case Some(intValue) => Some(intValue)
+        case None => None
       }
     }
     borderValues

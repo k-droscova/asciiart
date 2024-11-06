@@ -69,6 +69,14 @@ class AsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEa
     customTableMock.close()
   }
 
+  test("Valid input with bordered table and borders") {
+    val converter = parser.parse("--table=bordered \"chars\" [1,2,3,4]")
+    assert(converter.isInstanceOf[BorderedAsciiConvertor])
+    val convertor: BorderedAsciiConvertor = converter.asInstanceOf[BorderedAsciiConvertor]
+    assert(convertor.characters == "chars")
+    assert(convertor.borders == List(1,2,3,4))
+  }
+
   test("Whitespace handling in custom table argument") {
     customTableMock = mockConstruction(classOf[CustomLinearAsciiConvertor], (mocked, context) => {
       assert(" chars " == context.arguments.get(0).asInstanceOf[String])
@@ -152,6 +160,6 @@ class AsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEa
     val thrown = intercept[BaseError] {
       parser.parse("--table=bordered \"\" []")
     }
-    assert(thrown.message.contains("Invalid arguments for Bordered Ascii Table:"))
+    assert(thrown.message.contains("Invalid Bordered Ascii Table: characters string cannot be empty."))
   }
 }

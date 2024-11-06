@@ -14,7 +14,6 @@ import Core.Errors.{BaseError, ASCIIConversionErrorCodes, LogContext, LogSeverit
  *                   if `characters` is empty, or if any border is out of the 0-255 range.
  */
 class BorderedAsciiTable(characters: String, borders: List[Int]) extends AsciiTable {
-
   if (characters.isEmpty) {
     throw BaseError(
       message = "Invalid Bordered Ascii Table: characters string cannot be empty.",
