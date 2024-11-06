@@ -33,6 +33,15 @@ class ExporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
     fileMock.close()
   }
 
+  test("Whitespace handling") {
+    fileMock = mockConstruction(classOf[FileExporter], (mocked, context) => {
+      assert("path/to/output.txt" == context.arguments.get(0).asInstanceOf[String])
+    })
+    val exporter = parser.parse("--output-file \"       path/to/output.txt    \"")
+    assert(exporter.isInstanceOf[FileExporter])
+    fileMock.close()
+  }
+
   test("Valid input with output to console") {
     consoleMock = mockConstruction(classOf[ConsoleExporter], (mocked, context) => {})
     val exporter = parser.parse("--output-console")
@@ -83,14 +92,6 @@ class ExporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
   test("--output-file with non-string path") {
     val thrown = intercept[BaseError] {
       parser.parse("--output-file NonStringPath")
-    }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Output filepath must be specified in quotes after --output-file argument."))
-  }
-
-  test("Whitespace handling") {
-    val thrown = intercept[BaseError] {
-      parser.parse("--output-file \"  path/to/output.txt  \"")
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Output filepath must be specified in quotes after --output-file argument."))

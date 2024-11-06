@@ -4,21 +4,13 @@ import Core.Errors.{BaseError, GeneralErrorCodes, LogSeverity, LogContext}
 import Services.ImageConvertors.AsciiConvertor.*
 class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
   override def parse(input: String): AsciiConvertor = {
-    val args = splitArgs(input)
+    val args = splitArguments(input)
     parseArguments(args)
   }
 
-  private def splitArgs(input: String): List[String] = {
-    // Regex to match quoted strings or unquoted words
-    val pattern = """(?:"([^"]*)"|([^"\s]+))""".r
-
-    // Find all matches in the input string
-    pattern.findAllIn(input).matchData.map { m =>
-      Option(m.group(1)).getOrElse(m.group(2)).trim // Extract the matched group
-    }.toList
-  }
   private def parseArguments(args: List[String]): AsciiConvertor = {
     var customChars: Option[String] = None
+    val doubleQuotePattern = """\"(.*?)\"""".r
     var tableType: Option[String] = None
     var borders: List[Int] = List()
 
@@ -29,7 +21,10 @@ class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
             throw createBaseError("Only one table can be specified")
           }
           if (i + 1 < args.length) {
-            customChars = Some(args(i + 1))
+            val potentialChars = args(i+1)
+            if (!doubleQuotePattern.matches(potentialChars))
+              throw createBaseError("Custom characters must be specified in quotes after --custom-table argument.")
+            customChars = Some(extractQuotedInput(potentialChars))
           } else {
             throw createBaseError("Custom characters must be specified after --custom-table argument.")
           }
@@ -54,17 +49,20 @@ class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
 
     (customChars, tableType) match {
       case (Some(chars), None) => new CustomLinearAsciiConvertor(chars)
+      case (None, None) => new DefaultLinearAsciiConvertor()
       case (None, Some("default")) => new DefaultLinearAsciiConvertor()
       case (None, Some("bourke")) => new BourkeLinearAsciiConvertor()
       case (Some(chars), Some("bordered")) => new BorderedAsciiConvertor(chars, borders)
-      case _ => new DefaultLinearAsciiConvertor()
+      case _ => throw createBaseError("Invalid table argument.")
     }
   }
 
   private def parseBorders(args: List[String], currentIndex: Int): List[Int] = {
     val borderPattern = """^\[([+-]?\d+(,[+-]?\d+)*)?\]$""".r
-    if (currentIndex + 1 >= args.length || !borderPattern.matches(args(currentIndex + 1))) {
+    if (currentIndex + 1 >= args.length) {
       throw createBaseError("Border characters must be specified after --table=bordered argument.")
+    } else if (!borderPattern.matches(args(currentIndex + 1))) {
+      throw createBaseError("Border characters must be be in this pattern: [int,int,int,...]")
     }
     val borderValuesArg = args(currentIndex + 1).stripPrefix("[").stripSuffix("]")
     val borderValues = borderValuesArg.split(",").toList.flatMap { value =>
@@ -74,10 +72,6 @@ class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
       } else {
         None
       }
-    }
-
-    if (borderValues.isEmpty) {
-      throw createBaseError("At least one valid border value must be specified in the format: [1,2,3,...].")
     }
     borderValues
   }

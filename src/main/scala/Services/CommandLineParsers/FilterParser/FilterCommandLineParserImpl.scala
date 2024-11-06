@@ -5,7 +5,7 @@ import Services.Filters.*
 
 class FilterCommandLineParserImpl extends FilterCommandLineParser {
   override def parse(input: String): List[Filter] = {
-    val args = input.split(" ").toList
+    val args = splitArguments(input)
     parseArguments(args)
   }
 

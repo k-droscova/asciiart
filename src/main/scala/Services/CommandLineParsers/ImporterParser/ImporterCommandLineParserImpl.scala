@@ -6,7 +6,7 @@ import Services.Importers.Importer
 
 class ImporterCommandLineParserImpl extends ImporterCommandLineParser {
   override def parse(input: String): Importer = {
-    val args = input.split(" ").toList
+    val args = splitArguments(input)
     val (imagePath, randomImageRequested) = parseArguments(args)
     validateArguments(imagePath, randomImageRequested)
     createImporter(imagePath, randomImageRequested)
@@ -26,7 +26,7 @@ class ImporterCommandLineParserImpl extends ImporterCommandLineParser {
           if (i + 1 < args.length) {
             val potentialPath = args(i + 1)
             if (quotedPathPattern.matches(potentialPath)) {
-              imagePath = Some(potentialPath.stripPrefix("\"").stripSuffix("\""))
+              imagePath = Some(extractQuotedInputAndTrim(potentialPath))
             } else {
               throw createBaseError("Image filepath must be specified in quotes after --image argument.")
             }

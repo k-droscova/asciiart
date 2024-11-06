@@ -5,7 +5,7 @@ import Services.Exporters.Exporter
 import Services.Exporters.{FileExporter, ConsoleExporter}
 class ExporterCommandLineParserImpl extends ExporterCommandLineParser {
   override def parse(input: String): Exporter = {
-    val args = input.split(" ").toList
+    val args = splitArguments(input)
     val (outputPath, outputToConsoleRequested) = parseArguments(args)
     validateArguments(outputPath, outputToConsoleRequested)
     createExporter(outputPath, outputToConsoleRequested)
@@ -25,7 +25,7 @@ class ExporterCommandLineParserImpl extends ExporterCommandLineParser {
           if (i + 1 < args.length) {
             val potentialPath = args(i + 1)
             if (quotedPathPattern.matches(potentialPath)) {
-              outputPath = Some(potentialPath.stripPrefix("\"").stripSuffix("\""))
+              outputPath = Some(extractQuotedInputAndTrim(potentialPath))
             } else {
               throw createBaseError("Output filepath must be specified in quotes after --output-file argument.")
             }

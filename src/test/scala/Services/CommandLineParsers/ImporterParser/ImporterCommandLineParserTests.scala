@@ -34,6 +34,15 @@ class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
     fileMock.close()
   }
 
+  test("Whitespace handling") {
+    fileMock = mockConstruction(classOf[FileImporter], (mocked, context) => {
+      assert("path/to/image.jpg" == context.arguments.get(0).asInstanceOf[String])
+    })
+    val importer = parser.parse("--image \"         path/to/image.jpg    \"")
+    assert(importer.isInstanceOf[FileImporter])
+    fileMock.close()
+  }
+
   test("Valid input with random image flag") {
     randomMock = mockConstruction(classOf[RandomImporter], (mocked, context) => {})
     val importer = parser.parse("--image-random")
@@ -84,14 +93,6 @@ class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach
   test("--image with non-string path") {
     val thrown = intercept[BaseError] {
       parser.parse("--image NonStringPath")
-    }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Image filepath must be specified in quotes after --image argument."))
-  }
-
-  test("Whitespace handling") {
-    val thrown = intercept[BaseError] {
-      parser.parse("--image \"  path/to/image.jpg  \"")
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Image filepath must be specified in quotes after --image argument."))
