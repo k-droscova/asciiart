@@ -56,7 +56,6 @@ class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
       case (None, Some("default")) => new DefaultLinearAsciiConvertor()
       case (None, Some("bourke")) => new BourkeLinearAsciiConvertor()
       case (Some(chars), Some("bordered")) =>
-        println(s"Initializing Bordered with ${chars} and ${borders}")
         new BorderedAsciiConvertor(chars, borders)
       case _ => throw createBaseError("Invalid table argument.")
     }
