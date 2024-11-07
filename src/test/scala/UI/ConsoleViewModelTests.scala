@@ -20,8 +20,6 @@ import org.mockito.MockedConstruction
 import org.mockito.ArgumentMatchers.any
 
 class ConsoleViewModelTests extends AnyFunSuite with BeforeAndAfterEach {
-
-  // Directly using `Mockito.mock` with explicit types and classOf
   private val mockAsciiTableParser: AsciiTableCommandLineParserImpl = mock(classOf[AsciiTableCommandLineParserImpl])
   private val mockImportParser: ImporterCommandLineParserImpl = mock(classOf[ImporterCommandLineParserImpl])
   private val mockExportParser: ExporterCommandLineParserImpl = mock(classOf[ExporterCommandLineParserImpl])
