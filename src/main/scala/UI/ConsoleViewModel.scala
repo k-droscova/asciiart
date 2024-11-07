@@ -10,12 +10,14 @@ import Services.Exporters.Exporter
 import Services.Filters.Filter
 import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
 import Services.ImageConvertors.GrayscaleConvertor.LinearGrayscaleConvertor
-class ConsoleViewModel extends ConsoleViewModeling {
-  private val asciiTableParser = new AsciiTableCommandLineParserImpl
-  private val importParser = new ImporterCommandLineParserImpl
-  private val exportParser = new ExporterCommandLineParserImpl
-  private val filterParser = new FilterCommandLineParserImpl
-  private val grayscaleConvertor = new LinearGrayscaleConvertor
+class ConsoleViewModel(
+                        private val asciiTableParser: AsciiTableCommandLineParserImpl = new AsciiTableCommandLineParserImpl,
+                        private val importParser: ImporterCommandLineParserImpl = new ImporterCommandLineParserImpl,
+                        private val exportParser: ExporterCommandLineParserImpl = new ExporterCommandLineParserImpl,
+                        private val filterParser: FilterCommandLineParserImpl = new FilterCommandLineParserImpl,
+                        private val grayscaleConvertor: LinearGrayscaleConvertor = new LinearGrayscaleConvertor
+                      )
+  extends ConsoleViewModeling {
   override def run(args: Array[String]): Unit = {
     // parse args
     val importer: Importer = importParser.parse(args)
