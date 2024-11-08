@@ -11,6 +11,8 @@ import org.mockito.MockedConstruction
 import org.mockito.ArgumentMatchers.any
 
 import java.io.{ByteArrayOutputStream, PrintStream}
+import scala.language.postfixOps
+
 class ConsoleViewTests extends AnyFunSuite with BeforeAndAfterEach {
   private var viewModel: MockedConstruction[ConsoleViewModel] = uninitialized
 
@@ -34,22 +36,34 @@ class ConsoleViewTests extends AnyFunSuite with BeforeAndAfterEach {
     viewModel.close()
   }
 
-  test("Prints error message to console when any error is thrown by view-model") {
+  test("Prints error message to console when Base error is thrown by view-model") {
+    val args = Array("random", "testing", "args")
+
+    val outputStream = new ByteArrayOutputStream();
+    System.setErr(new PrintStream(outputStream))
+    viewModel = mockConstruction(classOf[ConsoleViewModel], (mockedInstance, _) => {
+      doAnswer(_ => throw BaseError(
+        "Testing error",
+        LogSeverity.Error,
+        LogContext.UI,
+        GeneralErrorCodes.UnknownError
+      )).when(mockedInstance).run(any())
+    })
+    ConsoleView.main(args)
+    assert(outputStream.toString.contains("Error: Testing error"))
+    viewModel.close()
+  }
+
+  test("Prints error message to console when any other than Base error is thrown by view-model") {
     val args = Array("random", "testing", "args")
 
     val outputStream = new ByteArrayOutputStream()
-    Console.withOut(new PrintStream(outputStream)) {
-      viewModel = mockConstruction(classOf[ConsoleViewModel], (mockedInstance, _) => {
-        doAnswer(_ => throw BaseError(
-          "Testing error",
-          LogSeverity.Error,
-          LogContext.UI,
-          GeneralErrorCodes.UnknownError
-        )).when(mockedInstance).run(any())
-      })
-      ConsoleView.main(args)
-    }
-    assert(outputStream.toString.contains("Error: Testing error"))
+    System.setErr(new PrintStream(outputStream))
+    viewModel = mockConstruction(classOf[ConsoleViewModel], (mockedInstance, _) => {
+      doAnswer(_ => throw new RuntimeException("random error")).when(mockedInstance).run(any())
+    })
+    ConsoleView.main(args)
+    assert(outputStream.toString.contains("UNKNOWN ERROR: random error"))
     viewModel.close()
   }
 }

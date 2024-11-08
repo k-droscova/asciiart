@@ -11,8 +11,8 @@ object ConsoleView {
     } catch {
       case e: BaseError =>
         System.err.println(s"Error: ${e.message}")
-      case _ =>
-        System.err.println(s"Unknown ERROR")
+      case e: Throwable =>
+        System.err.println(s"UNKNOWN ERROR: ${e.getMessage}")
     }
   }
 }
