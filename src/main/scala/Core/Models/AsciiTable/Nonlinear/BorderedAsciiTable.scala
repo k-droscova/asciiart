@@ -25,7 +25,7 @@ class BorderedAsciiTable(characters: String, borders: List[Int]) extends AsciiTa
 
   if (borders.length != characters.length - 1) {
     throw BaseError(
-      message = s"Invalid arguments for Bordered Ascii Table: character length ${characters.length} doesn't match expected borders length: ${borders.length + 1}",
+      message = s"Invalid arguments for Bordered Ascii Table: character length ${characters.length}, borders length: ${borders.length}. Border length should be ${characters.length-1}",
       severity = LogSeverity.Error,
       context = LogContext.UI,
       errorCode = ASCIIConversionErrorCodes.InvalidTable
