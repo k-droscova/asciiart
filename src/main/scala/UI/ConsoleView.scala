@@ -10,7 +10,9 @@ object ConsoleView {
       viewModel.run(args)
     } catch {
       case e: BaseError =>
-        println(s"Error: ${e.message}")
+        System.err.println(s"Error: ${e.message}")
+      case _ =>
+        System.err.println(s"Unknown ERROR")
     }
   }
 }
