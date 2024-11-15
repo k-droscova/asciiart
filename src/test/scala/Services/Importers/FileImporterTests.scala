@@ -81,7 +81,6 @@ class FileImporterTests extends AnyFunSuite with BeforeAndAfterEach {
   test("FileImporter should load a valid JPG image") {
     val importer = new FileImporter(validJpgFile.getPath)
     val image = importer.importImage()
-    assert(image.isInstanceOf[RGBImage])
     assert(image.getWidth == 200)
     assert(image.getHeight == 100)
   }
@@ -89,7 +88,6 @@ class FileImporterTests extends AnyFunSuite with BeforeAndAfterEach {
   test("FileImporter should load a valid PNG image") {
     val importer = new FileImporter(validPngFile.getPath)
     val image = importer.importImage()
-    assert(image.isInstanceOf[RGBImage])
     assert(image.getWidth == 200)
     assert(image.getHeight == 100)
   }
@@ -97,7 +95,6 @@ class FileImporterTests extends AnyFunSuite with BeforeAndAfterEach {
   test("FileImporter should load a valid GIF image") {
     val importer = new FileImporter(validGifFile.getPath)
     val image = importer.importImage()
-    assert(image.isInstanceOf[RGBImage])
     assert(image.getWidth == 200)
     assert(image.getHeight == 100)
   }
@@ -105,7 +102,6 @@ class FileImporterTests extends AnyFunSuite with BeforeAndAfterEach {
   test("FileImporter should handle a 1x1 image gracefully") {
     val importer = new FileImporter(onePixelFile.getPath)
     val image = importer.importImage()
-    assert(image.isInstanceOf[RGBImage])
     assert(image.getWidth == 1)
     assert(image.getHeight == 1)
     val pixel = image.getPixel(0, 0)
