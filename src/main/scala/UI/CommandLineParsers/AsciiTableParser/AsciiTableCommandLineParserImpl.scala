@@ -1,6 +1,8 @@
 package UI.CommandLineParsers.AsciiTableParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
+import Core.Models.AsciiTable.Linear.{BourkeLinearAsciiTable, CustomLinearAsciiTable, DefaultLinearAsciiTable}
+import Core.Models.AsciiTable.Nonlinear.BorderedAsciiTable
 import Services.ImageConvertors.AsciiConvertor.*
 
 /**
@@ -74,12 +76,12 @@ class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
     }
 
     (customChars, tableType) match {
-      case (Some(chars), None) => new CustomLinearAsciiConvertor(chars)
-      case (None, None) => new DefaultLinearAsciiConvertor()
-      case (None, Some("default")) => new DefaultLinearAsciiConvertor()
-      case (None, Some("bourke")) => new BourkeLinearAsciiConvertor()
+      case (Some(chars), None) => new AsciiConvertor(new CustomLinearAsciiTable(chars))
+      case (None, None) => new AsciiConvertor(new DefaultLinearAsciiTable)
+      case (None, Some("default")) => new AsciiConvertor(new DefaultLinearAsciiTable)
+      case (None, Some("bourke")) => new AsciiConvertor(new BourkeLinearAsciiTable)
       case (Some(chars), Some("bordered")) =>
-        new BorderedAsciiConvertor(chars, borders)
+        new AsciiConvertor(new BorderedAsciiTable(chars, borders))
       case _ => throw createBaseError("Invalid table argument.")
     }
   }

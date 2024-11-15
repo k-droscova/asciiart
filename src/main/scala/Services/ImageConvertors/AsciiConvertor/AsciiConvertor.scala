@@ -7,11 +7,11 @@ import Services.ImageConvertors.ImageConvertor
 
 
 /**
- * Abstract class for converting a GrayscaleImage to an AsciiImage using a specified AsciiTable.
+ * Class for converting a GrayscaleImage to an AsciiImage using a specified AsciiTable.
  *
  * @param asciiTable The table that maps grayscale intensities to ASCII characters.
  */
-abstract class AsciiConvertor(asciiTable: AsciiTable) extends ImageConvertor[GrayscaleImage, AsciiImage] {
+class AsciiConvertor(asciiTable: AsciiTable) extends ImageConvertor[GrayscaleImage, AsciiImage] {
 
   /**
    * Converts a GrayscaleImage to an AsciiImage by mapping each pixel's intensity to an ASCII character.

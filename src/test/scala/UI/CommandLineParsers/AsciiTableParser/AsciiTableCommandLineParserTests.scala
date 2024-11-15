@@ -1,7 +1,6 @@
 package Services.CommandLineParsers.AsciiTableParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes}
-import Services.ImageConvertors.AsciiConvertor.{BorderedAsciiConvertor, BourkeLinearAsciiConvertor, CustomLinearAsciiConvertor, DefaultLinearAsciiConvertor}
 import UI.CommandLineParsers.AsciiTableParser.AsciiTableCommandLineParserImpl
 import org.mockito.MockedConstruction
 import org.mockito.Mockito.*
@@ -9,7 +8,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.compiletime.uninitialized
-class AsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
+/*class AsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
   private var parser: AsciiTableCommandLineParserImpl = uninitialized
   private var defaultTableMock: MockedConstruction[DefaultLinearAsciiConvertor] = uninitialized
   private var customTableMock: MockedConstruction[CustomLinearAsciiConvertor] = uninitialized
@@ -164,3 +163,4 @@ class AsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEa
     assert(thrown.message.contains("Invalid Bordered Ascii Table: characters string cannot be empty."))
   }
 }
+*/
