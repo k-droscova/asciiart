@@ -1,22 +1,20 @@
 package UI
 
-import Core.Models.Image.{AsciiImage, GrayscaleImage, RGBImage}
+import Business.{ImageProcessor, ImageProcessorImpl}
 import Services.Exporters.Exporter
 import Services.Filters.Filter
 import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
-import Services.ImageConvertors.GrayscaleConvertor.LinearGrayscaleConvertor
 import Services.Importers.Importer
-import UI.CommandLineParsers.AsciiTableParser.AsciiTableCommandLineParserImpl
-import UI.CommandLineParsers.ExporterParser.ExporterCommandLineParserImpl
-import UI.CommandLineParsers.FilterParser.FilterCommandLineParserImpl
-import UI.CommandLineParsers.ImporterParser.ImporterCommandLineParserImpl
+import UI.CommandLineParsers.AsciiTableParser.{AsciiTableCommandLineParserImpl, AsciiTableCommandLineParser}
+import UI.CommandLineParsers.ExporterParser.{ExporterCommandLineParserImpl, ExporterCommandLineParser}
+import UI.CommandLineParsers.FilterParser.{FilterCommandLineParserImpl, FilterCommandLineParser}
+import UI.CommandLineParsers.ImporterParser.{ImporterCommandLineParserImpl, ImporterCommandLineParser}
 
 class ConsoleViewModel(
-                        private val asciiTableParser: AsciiTableCommandLineParserImpl = new AsciiTableCommandLineParserImpl,
-                        private val importParser: ImporterCommandLineParserImpl = new ImporterCommandLineParserImpl,
-                        private val exportParser: ExporterCommandLineParserImpl = new ExporterCommandLineParserImpl,
-                        private val filterParser: FilterCommandLineParserImpl = new FilterCommandLineParserImpl,
-                        private val grayscaleConvertor: LinearGrayscaleConvertor = new LinearGrayscaleConvertor
+                        private val asciiTableParser: AsciiTableCommandLineParser = new AsciiTableCommandLineParserImpl,
+                        private val importParser: ImporterCommandLineParser = new ImporterCommandLineParserImpl,
+                        private val exportParser: ExporterCommandLineParser = new ExporterCommandLineParserImpl,
+                        private val filterParser: FilterCommandLineParser = new FilterCommandLineParserImpl
                       )
   extends ConsoleViewModeling {
   override def run(args: Array[String]): Unit = {
@@ -26,17 +24,12 @@ class ConsoleViewModel(
     val filters: List[Filter] = filterParser.parse(args)
     val exporter: Exporter = exportParser.parse(args)
 
-    // import image
-    val rgbImage: RGBImage = importer.importImage()
-    // convert to grayscale
-    val grayscaleImage: GrayscaleImage = grayscaleConvertor.convert(rgbImage)
-    // apply filters
-    val filteredImage: GrayscaleImage = filters.foldLeft(grayscaleImage) { (currentImage, filter) =>
-      filter.apply(currentImage)
-    }
-    // convert to ascii
-    val asciiImage: AsciiImage = ascii.convert(filteredImage)
-    // export
-    exporter.exportImage(asciiImage)
+    val processor: ImageProcessor = new ImageProcessorImpl(
+      importer = importer,
+      filters = filters,
+      asciiConvertor = ascii,
+      exporter = exporter
+    )
+    processor.processImage()
   }
 }

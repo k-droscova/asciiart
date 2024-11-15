@@ -1,16 +1,15 @@
 package UI
 
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
-import Core.Models.Image.{AsciiImage, GrayscaleImage, RGBImage}
+import Business.{ImageProcessor, ImageProcessorImpl}
 import Services.Exporters.Exporter
 import Services.Filters.Filter
 import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
-import Services.ImageConvertors.GrayscaleConvertor.LinearGrayscaleConvertor
 import Services.Importers.Importer
-import UI.CommandLineParsers.AsciiTableParser.AsciiTableCommandLineParserImpl
-import UI.CommandLineParsers.ExporterParser.ExporterCommandLineParserImpl
-import UI.CommandLineParsers.FilterParser.FilterCommandLineParserImpl
-import UI.CommandLineParsers.ImporterParser.ImporterCommandLineParserImpl
+import UI.CommandLineParsers.AsciiTableParser.{AsciiTableCommandLineParserImpl, AsciiTableCommandLineParser}
+import UI.CommandLineParsers.ExporterParser.{ExporterCommandLineParserImpl, ExporterCommandLineParser}
+import UI.CommandLineParsers.FilterParser.{FilterCommandLineParserImpl, FilterCommandLineParser}
+import UI.CommandLineParsers.ImporterParser.{ImporterCommandLineParserImpl, ImporterCommandLineParser}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockedConstruction
 import org.mockito.Mockito.*
@@ -20,19 +19,17 @@ import org.scalatest.funsuite.AnyFunSuite
 import scala.compiletime.uninitialized
 
 class ConsoleViewModelTests extends AnyFunSuite with BeforeAndAfterEach {
-  private val mockAsciiTableParser: AsciiTableCommandLineParserImpl = mock(classOf[AsciiTableCommandLineParserImpl])
-  private val mockImportParser: ImporterCommandLineParserImpl = mock(classOf[ImporterCommandLineParserImpl])
-  private val mockExportParser: ExporterCommandLineParserImpl = mock(classOf[ExporterCommandLineParserImpl])
-  private val mockFilterParser: FilterCommandLineParserImpl = mock(classOf[FilterCommandLineParserImpl])
-  private val mockGrayscaleConvertor: LinearGrayscaleConvertor = mock(classOf[LinearGrayscaleConvertor])
+  private val mockAsciiTableParser: AsciiTableCommandLineParser = mock(classOf[AsciiTableCommandLineParser])
+  private val mockImportParser: ImporterCommandLineParser = mock(classOf[ImporterCommandLineParser])
+  private val mockExportParser: ExporterCommandLineParser = mock(classOf[ExporterCommandLineParser])
+  private val mockFilterParser: FilterCommandLineParser = mock(classOf[FilterCommandLineParser])
+
+  private var imageProcessorMock: MockedConstruction[ImageProcessorImpl] = uninitialized
 
   private val mockImporter: Importer = mock(classOf[Importer])
   private val mockAsciiConvertor: AsciiConvertor = mock(classOf[AsciiConvertor])
   private val mockExporter: Exporter = mock(classOf[Exporter])
   private val mockFilter: Filter = mock(classOf[Filter])
-  private val mockRgbImage: RGBImage = mock(classOf[RGBImage])
-  private val mockGrayscaleImage: GrayscaleImage = mock(classOf[GrayscaleImage])
-  private val mockAsciiImage: AsciiImage = mock(classOf[AsciiImage])
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -40,11 +37,6 @@ class ConsoleViewModelTests extends AnyFunSuite with BeforeAndAfterEach {
     when(mockAsciiTableParser.parse(any())).thenReturn(mockAsciiConvertor)
     when(mockFilterParser.parse(any())).thenReturn(List(mockFilter))
     when(mockExportParser.parse(any())).thenReturn(mockExporter)
-
-    when(mockImporter.importImage()).thenReturn(mockRgbImage)
-    when(mockGrayscaleConvertor.convert(mockRgbImage)).thenReturn(mockGrayscaleImage)
-    when(mockFilter.apply(mockGrayscaleImage)).thenReturn(mockGrayscaleImage)
-    when(mockAsciiConvertor.convert(mockGrayscaleImage)).thenReturn(mockAsciiImage)
   }
   override def afterEach(): Unit = {
     super.afterEach()
@@ -53,24 +45,25 @@ class ConsoleViewModelTests extends AnyFunSuite with BeforeAndAfterEach {
       mockImportParser,
       mockExportParser,
       mockFilterParser,
-      mockGrayscaleConvertor,
       mockImporter,
       mockAsciiConvertor,
       mockExporter,
-      mockFilter,
-      mockRgbImage,
-      mockGrayscaleImage,
-      mockAsciiImage
+      mockFilter
     )
   }
 
   test("ConsoleViewModel.run calls dependencies in correct sequence and passes correct arguments") {
+    imageProcessorMock = mockConstruction(classOf[ImageProcessorImpl], (mocked, context) => {
+      assert(context.arguments.get(0) == mockImporter)
+      assert(context.arguments.get(1) == List(mockFilter))
+      assert(context.arguments.get(2) == mockAsciiConvertor)
+      assert(context.arguments.get(3) == mockExporter)
+    })
     val viewModel = new ConsoleViewModel(
       mockAsciiTableParser,
       mockImportParser,
       mockExportParser,
-      mockFilterParser,
-      mockGrayscaleConvertor
+      mockFilterParser
     )
 
     val args = Array("some", "test", "arguments")
@@ -81,11 +74,30 @@ class ConsoleViewModelTests extends AnyFunSuite with BeforeAndAfterEach {
     verify(mockFilterParser).parse(args)
     verify(mockExportParser).parse(args)
 
-    verify(mockImporter).importImage()
-    verify(mockGrayscaleConvertor).convert(mockRgbImage)
-    verify(mockFilter).apply(mockGrayscaleImage)
-    verify(mockAsciiConvertor).convert(mockGrayscaleImage)
-    verify(mockExporter).exportImage(mockAsciiImage)
+    assert(imageProcessorMock.constructed().size() == 1)
+    verify(imageProcessorMock.constructed().get(0)).processImage()
+    imageProcessorMock.close()
+  }
+
+  test("ConsoleViewModel.run propagates error from processImage") {
+    imageProcessorMock = mockConstruction(classOf[ImageProcessorImpl], (mocked, _) => {
+      doAnswer(_ => throw BaseError("Testing error in processImage", LogContext.UI, GeneralErrorCodes.UnknownError))
+        .when(mocked)
+        .processImage()
+    })
+    val viewModel = new ConsoleViewModel(
+      mockAsciiTableParser,
+      mockImportParser,
+      mockExportParser,
+      mockFilterParser
+    )
+    val args = Array("some", "test", "arguments")
+    val thrown = intercept[BaseError] {
+      viewModel.run(args)
+    }
+    assert(thrown.message.contains("Testing error in processImage"))
+    assert(thrown.errorCode == GeneralErrorCodes.UnknownError)
+    imageProcessorMock.close()
   }
 
   test("ConsoleViewModel.run propagates error from importParser") {
@@ -95,9 +107,9 @@ class ConsoleViewModelTests extends AnyFunSuite with BeforeAndAfterEach {
       mockAsciiTableParser,
       mockImportParser,
       mockExportParser,
-      mockFilterParser,
-      mockGrayscaleConvertor
+      mockFilterParser
     )
+
     val args = Array("some", "test", "arguments")
     val thrown = intercept[BaseError] {
       viewModel.run(args)
@@ -113,8 +125,7 @@ class ConsoleViewModelTests extends AnyFunSuite with BeforeAndAfterEach {
       mockAsciiTableParser,
       mockImportParser,
       mockExportParser,
-      mockFilterParser,
-      mockGrayscaleConvertor
+      mockFilterParser
     )
     val args = Array("some", "test", "arguments")
     val thrown = intercept[BaseError] {
@@ -131,8 +142,7 @@ class ConsoleViewModelTests extends AnyFunSuite with BeforeAndAfterEach {
       mockAsciiTableParser,
       mockImportParser,
       mockExportParser,
-      mockFilterParser,
-      mockGrayscaleConvertor
+      mockFilterParser
     )
     val args = Array("some", "test", "arguments")
     val thrown = intercept[BaseError] {
@@ -149,8 +159,7 @@ class ConsoleViewModelTests extends AnyFunSuite with BeforeAndAfterEach {
       mockAsciiTableParser,
       mockImportParser,
       mockExportParser,
-      mockFilterParser,
-      mockGrayscaleConvertor
+      mockFilterParser
     )
     val args = Array("some", "test", "arguments")
     val thrown = intercept[BaseError] {
@@ -158,95 +167,5 @@ class ConsoleViewModelTests extends AnyFunSuite with BeforeAndAfterEach {
     }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Testing error in asciiTableParser"))
-  }
-
-  test("ConsoleViewModel.run propagates error from importer's importImage") {
-    doAnswer(_ => throw BaseError("Testing error in importImage", LogContext.UI, GeneralErrorCodes.InvalidArgument)).when(mockImporter).importImage()
-
-    val viewModel = new ConsoleViewModel(
-      mockAsciiTableParser,
-      mockImportParser,
-      mockExportParser,
-      mockFilterParser,
-      mockGrayscaleConvertor
-    )
-    val args = Array("some", "test", "arguments")
-    val thrown = intercept[BaseError] {
-      viewModel.run(args)
-    }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Testing error in importImage"))
-  }
-
-  test("ConsoleViewModel.run propagates error from grayscaleConvertor's convert method") {
-    doAnswer(_ => throw BaseError("Testing error in convert to grayscale", LogContext.UI, GeneralErrorCodes.InvalidArgument)).when(mockGrayscaleConvertor).convert(mockRgbImage)
-
-    val viewModel = new ConsoleViewModel(
-      mockAsciiTableParser,
-      mockImportParser,
-      mockExportParser,
-      mockFilterParser,
-      mockGrayscaleConvertor
-    )
-    val args = Array("some", "test", "arguments")
-    val thrown = intercept[BaseError] {
-      viewModel.run(args)
-    }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Testing error in convert to grayscale"))
-  }
-
-  test("ConsoleViewModel.run propagates error from filter's apply method") {
-    doAnswer(_ => throw BaseError("Testing error in filter apply", LogContext.UI, GeneralErrorCodes.InvalidArgument)).when(mockFilter).apply(mockGrayscaleImage)
-
-    val viewModel = new ConsoleViewModel(
-      mockAsciiTableParser,
-      mockImportParser,
-      mockExportParser,
-      mockFilterParser,
-      mockGrayscaleConvertor
-    )
-    val args = Array("some", "test", "arguments")
-    val thrown = intercept[BaseError] {
-      viewModel.run(args)
-    }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Testing error in filter apply"))
-  }
-
-  test("ConsoleViewModel.run propagates error from asciiConvertor's convert method") {
-    doAnswer(_ => throw BaseError("Testing error in ASCII convert", LogContext.UI, GeneralErrorCodes.InvalidArgument)).when(mockAsciiConvertor).convert(mockGrayscaleImage)
-
-    val viewModel = new ConsoleViewModel(
-      mockAsciiTableParser,
-      mockImportParser,
-      mockExportParser,
-      mockFilterParser,
-      mockGrayscaleConvertor
-    )
-    val args = Array("some", "test", "arguments")
-    val thrown = intercept[BaseError] {
-      viewModel.run(args)
-    }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Testing error in ASCII convert"))
-  }
-
-  test("ConsoleViewModel.run propagates error from exporter's exportImage method") {
-    doAnswer(_ => throw BaseError("Testing error in exportImage", LogContext.UI, GeneralErrorCodes.InvalidArgument)).when(mockExporter).exportImage(mockAsciiImage)
-
-    val viewModel = new ConsoleViewModel(
-      mockAsciiTableParser,
-      mockImportParser,
-      mockExportParser,
-      mockFilterParser,
-      mockGrayscaleConvertor
-    )
-    val args = Array("some", "test", "arguments")
-    val thrown = intercept[BaseError] {
-      viewModel.run(args)
-    }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Testing error in exportImage"))
   }
 }
