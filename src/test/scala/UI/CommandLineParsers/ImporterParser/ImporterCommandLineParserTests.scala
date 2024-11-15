@@ -1,7 +1,8 @@
 package Services.CommandLineParsers.ImporterParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes}
-import Services.Importers.{FileImporter, RandomImporter}
+import Services.Importers.FileImporters.FileImporter
+import Services.Importers.RandomImporters.RandomImporter
 import UI.CommandLineParsers.ImporterParser.ImporterCommandLineParserImpl
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockedConstruction

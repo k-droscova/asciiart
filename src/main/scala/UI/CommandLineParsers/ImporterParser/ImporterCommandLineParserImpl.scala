@@ -1,7 +1,9 @@
 package UI.CommandLineParsers.ImporterParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
-import Services.Importers.{FileImporter, Importer, RandomImporter}
+import Services.Importers.FileImporters.FileImporter
+import Services.Importers.RandomImporters.RandomImporter
+import Services.Importers.Importer
 
 /**
  * Parses command line arguments related to importing images.

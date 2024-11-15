@@ -1,13 +1,14 @@
-package Services.Importers
+package Services.Importers.FileImporters
 
 import Core.Errors.{BaseError, ImageLoadingErrorCodes, LogContext}
 import Core.Models.Image.RGBImage
 import Core.Models.Pixel.RGBPixel
+import Services.Importers.Importer
 
 import java.awt.image.BufferedImage
 import java.io.File
-import javax.imageio.{ImageIO, ImageReader}
 import javax.imageio.stream.ImageInputStream
+import javax.imageio.{ImageIO, ImageReader}
 import scala.util.Try
 
 /**

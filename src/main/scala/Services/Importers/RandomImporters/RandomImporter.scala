@@ -1,8 +1,9 @@
-package Services.Importers
+package Services.Importers.RandomImporters
 
 import Core.Errors.{BaseError, ImageLoadingErrorCodes, LogContext}
 import Core.Models.Image.RGBImage
 import Core.Models.Pixel.RGBPixel
+import Services.Importers.Importer
 
 import scala.util.Random
 
@@ -24,14 +25,14 @@ import scala.util.Random
  *                   or if the minimum exceeds maximum value for both height and width
  */
 class RandomImporter(
-                      minWidth: Int = 1,
-                      maxWidth: Int = 800,
-                      minHeight: Int = 1,
-                      maxHeight: Int = 800,
-                      exactWidth: Option[Int] = None,
-                      exactHeight: Option[Int] = None
+                      val minWidth: Int = 1,
+                      val maxWidth: Int = 800,
+                      val minHeight: Int = 1,
+                      val maxHeight: Int = 800,
+                      val exactWidth: Option[Int] = None,
+                      val exactHeight: Option[Int] = None,
+                      private val random: Random = new Random()
                     ) extends Importer {
-  private val random = new Random()
   if (exactWidth.isDefined) {
     val w = exactWidth.get
     if (w < 0) {
