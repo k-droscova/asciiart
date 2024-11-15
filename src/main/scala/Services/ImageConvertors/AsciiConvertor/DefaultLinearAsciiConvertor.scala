@@ -1,5 +1,0 @@
-package Services.ImageConvertors.AsciiConvertor
-
-import Core.Models.AsciiTable.Linear.DefaultLinearAsciiTable
-
-class DefaultLinearAsciiConvertor extends AsciiConvertor(new DefaultLinearAsciiTable)
