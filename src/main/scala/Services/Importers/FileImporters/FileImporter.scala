@@ -11,83 +11,40 @@ import javax.imageio.stream.ImageInputStream
 import javax.imageio.{ImageIO, ImageReader}
 import scala.util.Try
 
-/**
- * FileImporter is responsible for importing RGB images from specified file paths.
- * It checks for the existence and validity of the file and ensures that the image format
- * is supported before loading the image. The supported image types are jpg, jpeg, png, gif
- *
- * @param path The file path to the image to be imported. This can be either
- *             absolute or relative.
- * @throws BaseError If the file does not exist, is not a file, is of an unsupported format.
- */
-class FileImporter(path: String) extends Importer {
-  private val supportedFormats = Set("jpg", "jpeg", "png", "gif")
+abstract class FileImporter(path: String) extends Importer {
   private val file = new File(path)
 
   if (!file.exists()) {
-    throw BaseError(message = s"File with filepath $path doesn't exist.", context = LogContext.UI, errorCode = ImageLoadingErrorCodes.FileNotFound)
+    throw BaseError(
+      message = s"File with filepath $path doesn't exist.",
+      context = LogContext.UI,
+      errorCode = ImageLoadingErrorCodes.FileNotFound
+    )
   }
 
   if (!file.isFile) {
-    throw BaseError(message = s"File with filepath $path is not a file.", context = LogContext.UI, errorCode = ImageLoadingErrorCodes.FileUnreadable)
+    throw BaseError(
+      message = s"File with filepath $path is not a file.",
+      context = LogContext.UI,
+      errorCode = ImageLoadingErrorCodes.FileUnreadable
+    )
   }
 
-  private val formatName = getFormatName(file)
-
-  if (!supportedFormats.contains(formatName)) {
-    throw BaseError(message = s"Unsupported image format: $formatName. Supported formats are: ${supportedFormats.mkString(", ")}.", context = LogContext.UI, errorCode = ImageLoadingErrorCodes.UnsupportedFormat)
-  }
+  private val formatName: String = getFormatName(file)
+  validateFormat(formatName)
 
   /**
-   * Imports the image as an RGBImage.
-   *
-   * @return The imported RGBImage.
-   * @throws BaseError If the image cannot be loaded for any reason.
+   * Abstract method to validate the format-specific logic in subclasses.
+   * @param formatName The actual format of the file as determined by `getFormatName`.
    */
-  override def importImage(): RGBImage = {
-    val bufferedImage = Try(ImageIO.read(file)) match {
-      case scala.util.Success(img) => img
-      case scala.util.Failure(exception) => throw
-        BaseError(message = s"Failed to load image: ${exception.getMessage}.", context = LogContext.System, errorCode = ImageLoadingErrorCodes.FileUnreadable)
-    }
-    convertBufferedImageToRGBImage(bufferedImage)
-  }
+  protected def validateFormat(formatName: String): Unit
 
   /**
-   * Converts a BufferedImage to an RGBImage.
-   *
-   * @param bufferedImage The BufferedImage to convert.
-   * @return The converted RGBImage.
-   */
-  private def convertBufferedImageToRGBImage(bufferedImage: BufferedImage): RGBImage = {
-    val width = bufferedImage.getWidth
-    val height = bufferedImage.getHeight
-    val pixels = Vector.tabulate(height, width) { (y, x) =>
-      createRGBPixel(bufferedImage.getRGB(x, y))
-    }
-    RGBImage(pixels)
-  }
-
-  /**
-   * Creates an RGBPixel from an integer representation of the pixel.
-   *
-   * @param rgb The integer value of the pixel.
-   * @return The RGBPixel created from the RGB components.
-   */
-  private def createRGBPixel(rgb: Int): RGBPixel = {
-    val red = (rgb >> 16) & 0xff
-    val green = (rgb >> 8) & 0xff
-    val blue = rgb & 0xff
-    RGBPixel(red, green, blue)
-  }
-
-  /**
-   * Gets the format name of the image file.
-   *
+   * Gets the format name of the image file using `ImageIO`. It is protected, which allows subclasses to override if desired.
    * @param file The image file.
-   * @return The format name of the image in lowercase
+   * @return The format name of the image in lowercase.
    */
-  private def getFormatName(file: File): String = {
+  protected def getFormatName(file: File): String = {
     val inputStream: ImageInputStream = ImageIO.createImageInputStream(file)
     try {
       val readers = ImageIO.getImageReaders(inputStream)
@@ -100,5 +57,39 @@ class FileImporter(path: String) extends Importer {
     } finally {
       inputStream.close()
     }
+  }
+
+  /**
+   * Protected accessor for the validated file.
+   */
+  protected def getFile: File = file
+
+  override def importImage(): RGBImage = {
+    val bufferedImage = Try(ImageIO.read(file)) match {
+      case scala.util.Success(img) => img
+      case scala.util.Failure(exception) =>
+        throw BaseError(
+          message = s"Failed to load image: ${exception.getMessage}.",
+          context = LogContext.System,
+          errorCode = ImageLoadingErrorCodes.FileUnreadable
+        )
+    }
+    convertBufferedImageToRGBImage(bufferedImage)
+  }
+
+  private def convertBufferedImageToRGBImage(bufferedImage: BufferedImage): RGBImage = {
+    val width = bufferedImage.getWidth
+    val height = bufferedImage.getHeight
+    val pixels = Vector.tabulate(height, width) { (y, x) =>
+      createRGBPixel(bufferedImage.getRGB(x, y))
+    }
+    RGBImage(pixels)
+  }
+
+  private def createRGBPixel(rgb: Int): RGBPixel = {
+    val red = (rgb >> 16) & 0xff
+    val green = (rgb >> 8) & 0xff
+    val blue = rgb & 0xff
+    RGBPixel(red, green, blue)
   }
 }

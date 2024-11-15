@@ -1,0 +1,3 @@
+package UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers
+
+trait SpecializedImporterCommandLineParser extends CommandLineParser[Option[Importer]]
