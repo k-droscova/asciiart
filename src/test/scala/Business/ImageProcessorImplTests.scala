@@ -19,6 +19,7 @@ class ImageProcessorImplTests extends AnyFunSuite with BeforeAndAfterEach {
   private val mockFilter: Filter = mock(classOf[Filter])
   private val mockAsciiConvertor: AsciiConvertor = mock(classOf[AsciiConvertor])
   private val mockExporter: Exporter = mock(classOf[Exporter])
+
   private val mockRgbImage: RGBImage = mock(classOf[RGBImage])
   private val mockGrayscaleImage: GrayscaleImage = mock(classOf[GrayscaleImage])
   private val mockAsciiImage: AsciiImage = mock(classOf[AsciiImage])
@@ -38,10 +39,7 @@ class ImageProcessorImplTests extends AnyFunSuite with BeforeAndAfterEach {
       mockGrayscaleConvertor,
       mockFilter,
       mockAsciiConvertor,
-      mockExporter,
-      mockRgbImage,
-      mockGrayscaleImage,
-      mockAsciiImage
+      mockExporter
     )
   }
 
@@ -50,7 +48,8 @@ class ImageProcessorImplTests extends AnyFunSuite with BeforeAndAfterEach {
       importer = mockImporter,
       filters = List(mockFilter),
       asciiConvertor = mockAsciiConvertor,
-      exporter = mockExporter
+      exporter = mockExporter,
+      grayscaleConvertor = mockGrayscaleConvertor
     )
     processor.processImage()
 
@@ -72,7 +71,8 @@ class ImageProcessorImplTests extends AnyFunSuite with BeforeAndAfterEach {
       importer = mockImporter,
       filters = List(mockFilter),
       asciiConvertor = mockAsciiConvertor,
-      exporter = mockExporter
+      exporter = mockExporter,
+      grayscaleConvertor = mockGrayscaleConvertor
     )
 
     val thrown = intercept[BaseError] {
@@ -94,7 +94,8 @@ class ImageProcessorImplTests extends AnyFunSuite with BeforeAndAfterEach {
       importer = mockImporter,
       filters = List(mockFilter),
       asciiConvertor = mockAsciiConvertor,
-      exporter = mockExporter
+      exporter = mockExporter,
+      grayscaleConvertor = mockGrayscaleConvertor
     )
 
     val thrown = intercept[BaseError] {
@@ -116,7 +117,8 @@ class ImageProcessorImplTests extends AnyFunSuite with BeforeAndAfterEach {
       importer = mockImporter,
       filters = List(mockFilter),
       asciiConvertor = mockAsciiConvertor,
-      exporter = mockExporter
+      exporter = mockExporter,
+      grayscaleConvertor = mockGrayscaleConvertor
     )
 
     val thrown = intercept[BaseError] {
@@ -138,7 +140,8 @@ class ImageProcessorImplTests extends AnyFunSuite with BeforeAndAfterEach {
       importer = mockImporter,
       filters = List(mockFilter),
       asciiConvertor = mockAsciiConvertor,
-      exporter = mockExporter
+      exporter = mockExporter,
+      grayscaleConvertor = mockGrayscaleConvertor
     )
 
     val thrown = intercept[BaseError] {
@@ -160,7 +163,8 @@ class ImageProcessorImplTests extends AnyFunSuite with BeforeAndAfterEach {
       importer = mockImporter,
       filters = List(mockFilter),
       asciiConvertor = mockAsciiConvertor,
-      exporter = mockExporter
+      exporter = mockExporter,
+      grayscaleConvertor = mockGrayscaleConvertor
     )
 
     val thrown = intercept[BaseError] {
