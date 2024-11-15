@@ -1,7 +1,8 @@
 package Core.Models.AsciiTable.Linear
 
-import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+
 import scala.compiletime.uninitialized
 
 class DefaultLinearAsciiTableTests extends AnyFunSuite with BeforeAndAfterEach {

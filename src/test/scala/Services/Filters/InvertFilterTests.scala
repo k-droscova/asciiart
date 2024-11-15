@@ -1,10 +1,11 @@
 package Services.Filters
 
-import scala.compiletime.uninitialized
-import org.scalatest.funsuite.AnyFunSuite
-import org.scalatest.BeforeAndAfterEach
 import Core.Models.Image.GrayscaleImage
 import Core.Models.Pixel.GrayscalePixel
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+
+import scala.compiletime.uninitialized
 class InvertFilterTests extends AnyFunSuite with BeforeAndAfterEach {
   var grayscaleImage: GrayscaleImage = uninitialized
   var filter: InvertFilter = uninitialized

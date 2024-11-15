@@ -1,13 +1,14 @@
 package Services.CommandLineParsers.ExporterParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes}
-import Services.Exporters.{FileExporter, ConsoleExporter}
-import org.scalatest.funsuite.AnyFunSuite
+import Services.Exporters.{ConsoleExporter, FileExporter}
+import UI.CommandLineParsers.ExporterParser.ExporterCommandLineParserImpl
+import org.mockito.MockedConstruction
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.compiletime.uninitialized
-import org.mockito.Mockito._
-import org.mockito.MockedConstruction
 
 class ExporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
   private var parser: ExporterCommandLineParserImpl = uninitialized

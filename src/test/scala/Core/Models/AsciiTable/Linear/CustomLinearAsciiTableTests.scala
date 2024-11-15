@@ -1,9 +1,10 @@
 package Core.Models.AsciiTable.Linear
 
-import org.scalatest.funsuite.AnyFunSuite
+import Core.Errors.{ASCIIConversionErrorCodes, BaseError, LogContext}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+
 import scala.compiletime.uninitialized
-import Core.Errors.{BaseError, ASCIIConversionErrorCodes, LogContext, LogSeverity}
 
 class CustomLinearAsciiTableTests extends AnyFunSuite with BeforeAndAfterEach {
   var customTable: CustomLinearAsciiTable = uninitialized

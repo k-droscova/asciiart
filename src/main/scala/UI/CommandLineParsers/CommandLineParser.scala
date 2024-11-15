@@ -1,4 +1,4 @@
-package Services.CommandLineParsers
+package UI.CommandLineParsers
 
 /**
  * A trait for parsing command line arguments into a specified type.

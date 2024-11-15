@@ -1,12 +1,12 @@
 package Services.ImageConvertors.GrayscaleConvertor
 
-import org.scalatest.funsuite.AnyFunSuite
-import org.scalatest.BeforeAndAfterEach
-import scala.compiletime.uninitialized
-
-import Core.Models.Image.{RGBImage, GrayscaleImage}
-import Core.Models.Pixel.{RGBPixel, GrayscalePixel}
+import Core.Models.Image.{GrayscaleImage, RGBImage}
+import Core.Models.Pixel.{GrayscalePixel, RGBPixel}
 import Services.ImageConvertors.GrayscaleConvertor.LinearGrayscaleConvertor
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+
+import scala.compiletime.uninitialized
 
 class LinearGrayscaleConvertorTests extends AnyFunSuite with BeforeAndAfterEach {
 

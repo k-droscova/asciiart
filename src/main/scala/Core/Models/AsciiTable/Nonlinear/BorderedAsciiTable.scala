@@ -1,7 +1,7 @@
 package Core.Models.AsciiTable.Nonlinear
 
+import Core.Errors.{ASCIIConversionErrorCodes, BaseError, LogContext}
 import Core.Models.AsciiTable.AsciiTable
-import Core.Errors.{BaseError, ASCIIConversionErrorCodes, LogContext, LogSeverity}
 
 /**
  * The BorderedAsciiTable class maps grayscale values to ASCII characters based on predefined
@@ -15,30 +15,15 @@ import Core.Errors.{BaseError, ASCIIConversionErrorCodes, LogContext, LogSeverit
  */
 class BorderedAsciiTable(characters: String, borders: List[Int]) extends AsciiTable {
   if (characters.isEmpty) {
-    throw BaseError(
-      message = "Invalid Bordered Ascii Table: characters string cannot be empty.",
-      severity = LogSeverity.Error,
-      context = LogContext.UI,
-      errorCode = ASCIIConversionErrorCodes.InvalidTable
-    )
+    throw BaseError(message = "Invalid Bordered Ascii Table: characters string cannot be empty.", context = LogContext.UI, errorCode = ASCIIConversionErrorCodes.InvalidTable)
   }
 
   if (borders.length != characters.length - 1) {
-    throw BaseError(
-      message = s"Invalid arguments for Bordered Ascii Table: character length ${characters.length}, borders length: ${borders.length}. Border length should be ${characters.length-1}",
-      severity = LogSeverity.Error,
-      context = LogContext.UI,
-      errorCode = ASCIIConversionErrorCodes.InvalidTable
-    )
+    throw BaseError(message = s"Invalid arguments for Bordered Ascii Table: character length ${characters.length}, borders length: ${borders.length}. Border length should be ${characters.length - 1}", context = LogContext.UI, errorCode = ASCIIConversionErrorCodes.InvalidTable)
   }
 
   if (borders.exists(border => border < 0 || border > 255)) {
-    throw BaseError(
-      message = "Invalid Bordered Ascii Table: all borders must be within the 0-255 range.",
-      severity = LogSeverity.Error,
-      context = LogContext.UI,
-      errorCode = ASCIIConversionErrorCodes.InvalidTable
-    )
+    throw BaseError(message = "Invalid Bordered Ascii Table: all borders must be within the 0-255 range.", context = LogContext.UI, errorCode = ASCIIConversionErrorCodes.InvalidTable)
   }
 
   private val sortedBorders = borders.sorted

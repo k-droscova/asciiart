@@ -1,5 +1,6 @@
-package Services.CommandLineParsers.AsciiTableParser
+package UI.CommandLineParsers.AsciiTableParser
 
-import Services.CommandLineParsers.CommandLineParser
 import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
+import UI.CommandLineParsers.CommandLineParser
+
 trait AsciiTableCommandLineParser extends CommandLineParser[AsciiConvertor]

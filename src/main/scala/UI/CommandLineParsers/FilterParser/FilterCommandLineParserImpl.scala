@@ -1,6 +1,6 @@
-package Services.CommandLineParsers.FilterParser
+package UI.CommandLineParsers.FilterParser
 
-import Core.Errors.{BaseError, GeneralErrorCodes, LogContext, LogSeverity}
+import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
 import Services.Filters.*
 
 /**
@@ -93,11 +93,6 @@ class FilterCommandLineParserImpl extends FilterCommandLineParser {
   }
 
   private def createBaseError(message: String): BaseError = {
-    BaseError(
-      message = message,
-      severity = LogSeverity.Error,
-      context = LogContext.UI,
-      errorCode = GeneralErrorCodes.InvalidArgument
-    )
+    BaseError(message = message, context = LogContext.UI, errorCode = GeneralErrorCodes.InvalidArgument)
   }
 }

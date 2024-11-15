@@ -3,8 +3,9 @@ package Services.ImageConvertors.AsciiConvertor
 import Core.Errors.{ASCIIConversionErrorCodes, BaseError}
 import Core.Models.Image.GrayscaleImage
 import Core.Models.Pixel.GrayscalePixel
-import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+
 import scala.compiletime.uninitialized
 
 class BorderedAsciiConvertorTests extends AnyFunSuite with BeforeAndAfterEach {

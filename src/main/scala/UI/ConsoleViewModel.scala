@@ -1,15 +1,16 @@
 package UI
 
-import Core.Models.Image.{GrayscaleImage, RGBImage, AsciiImage}
-import Services.CommandLineParsers.AsciiTableParser.AsciiTableCommandLineParserImpl
-import Services.CommandLineParsers.ExporterParser.ExporterCommandLineParserImpl
-import Services.CommandLineParsers.FilterParser.FilterCommandLineParserImpl
-import Services.CommandLineParsers.ImporterParser.ImporterCommandLineParserImpl
-import Services.Importers.Importer
+import Core.Models.Image.{AsciiImage, GrayscaleImage, RGBImage}
 import Services.Exporters.Exporter
 import Services.Filters.Filter
 import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
 import Services.ImageConvertors.GrayscaleConvertor.LinearGrayscaleConvertor
+import Services.Importers.Importer
+import UI.CommandLineParsers.AsciiTableParser.AsciiTableCommandLineParserImpl
+import UI.CommandLineParsers.ExporterParser.ExporterCommandLineParserImpl
+import UI.CommandLineParsers.FilterParser.FilterCommandLineParserImpl
+import UI.CommandLineParsers.ImporterParser.ImporterCommandLineParserImpl
+
 class ConsoleViewModel(
                         private val asciiTableParser: AsciiTableCommandLineParserImpl = new AsciiTableCommandLineParserImpl,
                         private val importParser: ImporterCommandLineParserImpl = new ImporterCommandLineParserImpl,

@@ -1,7 +1,8 @@
 package Services.Exporters
 
+import Core.Errors.{BaseError, LogContext, OutputErrorCodes}
 import Core.Models.Image.AsciiImage
-import Core.Errors.{BaseError, OutputErrorCodes, LogContext, LogSeverity}
+
 import java.io.{File, PrintWriter}
 
 /**
@@ -23,12 +24,7 @@ class FileExporter(path: String) extends Exporter {
   private val file = new File(path)
 
   if (file.exists()) {
-    throw BaseError(
-      message = s"File already exists at path: $path. Please choose a different file name.",
-      severity = LogSeverity.Error,
-      context = LogContext.UI,
-      errorCode = OutputErrorCodes.FileSaveFailed
-    )
+    throw BaseError(message = s"File already exists at path: $path. Please choose a different file name.", context = LogContext.UI, errorCode = OutputErrorCodes.FileSaveFailed)
   }
 
   if (!file.getParentFile.exists()) {
@@ -60,12 +56,7 @@ class FileExporter(path: String) extends Exporter {
         val file = new File(finalPath)
         if (file.exists())
           file.delete()
-        throw BaseError(
-          message = s"Failed to save image to file: ${e.getMessage}.",
-          severity = LogSeverity.Error,
-          context = LogContext.System,
-          errorCode = OutputErrorCodes.FileSaveFailed
-        )
+        throw BaseError(message = s"Failed to save image to file: ${e.getMessage}.", context = LogContext.System, errorCode = OutputErrorCodes.FileSaveFailed)
     } finally {
       writer.close()
     }

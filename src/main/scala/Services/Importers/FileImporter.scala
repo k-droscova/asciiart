@@ -1,14 +1,13 @@
 package Services.Importers
 
-import Core.Errors.{BaseError, ImageLoadingErrorCodes, LogContext, LogSeverity}
+import Core.Errors.{BaseError, ImageLoadingErrorCodes, LogContext}
 import Core.Models.Image.RGBImage
 import Core.Models.Pixel.RGBPixel
 
-import java.io.File
-import javax.imageio.ImageIO
-import javax.imageio.ImageReader
-import javax.imageio.stream.ImageInputStream
 import java.awt.image.BufferedImage
+import java.io.File
+import javax.imageio.{ImageIO, ImageReader}
+import javax.imageio.stream.ImageInputStream
 import scala.util.Try
 
 /**
@@ -25,32 +24,17 @@ class FileImporter(path: String) extends Importer {
   private val file = new File(path)
 
   if (!file.exists()) {
-    throw BaseError(
-      message = s"File with filepath $path doesn't exist.",
-      severity = LogSeverity.Error,
-      context = LogContext.UI,
-      errorCode = ImageLoadingErrorCodes.FileNotFound
-    )
+    throw BaseError(message = s"File with filepath $path doesn't exist.", context = LogContext.UI, errorCode = ImageLoadingErrorCodes.FileNotFound)
   }
 
   if (!file.isFile) {
-    throw BaseError(
-      message = s"File with filepath $path is not a file.",
-      severity = LogSeverity.Error,
-      context = LogContext.UI,
-      errorCode = ImageLoadingErrorCodes.FileUnreadable
-    )
+    throw BaseError(message = s"File with filepath $path is not a file.", context = LogContext.UI, errorCode = ImageLoadingErrorCodes.FileUnreadable)
   }
 
   private val formatName = getFormatName(file)
 
   if (!supportedFormats.contains(formatName)) {
-    throw BaseError(
-      message = s"Unsupported image format: $formatName. Supported formats are: ${supportedFormats.mkString(", ")}.",
-      severity = LogSeverity.Error,
-      context = LogContext.UI,
-      errorCode = ImageLoadingErrorCodes.UnsupportedFormat
-    )
+    throw BaseError(message = s"Unsupported image format: $formatName. Supported formats are: ${supportedFormats.mkString(", ")}.", context = LogContext.UI, errorCode = ImageLoadingErrorCodes.UnsupportedFormat)
   }
 
   /**
@@ -63,12 +47,7 @@ class FileImporter(path: String) extends Importer {
     val bufferedImage = Try(ImageIO.read(file)) match {
       case scala.util.Success(img) => img
       case scala.util.Failure(exception) => throw
-        BaseError(
-          message = s"Failed to load image: ${exception.getMessage}.",
-          severity = LogSeverity.Error,
-          context = LogContext.System,
-          errorCode = ImageLoadingErrorCodes.FileUnreadable
-        )
+        BaseError(message = s"Failed to load image: ${exception.getMessage}.", context = LogContext.System, errorCode = ImageLoadingErrorCodes.FileUnreadable)
     }
     convertBufferedImageToRGBImage(bufferedImage)
   }

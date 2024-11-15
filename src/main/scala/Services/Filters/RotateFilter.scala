@@ -1,16 +1,11 @@
 package Services.Filters
 
-import Core.Errors.{BaseError, FilterErrorCodes, LogContext, LogSeverity}
+import Core.Errors.{BaseError, FilterErrorCodes, LogContext}
 import Core.Models.Image.GrayscaleImage
 import Core.Models.Pixel.GrayscalePixel
 class RotateFilter(angle: Int) extends Filter {
   if (angle % 90 != 0) {
-    throw BaseError(
-      message = s"Angle $angle is invalid. Angle must be a multiple of 90 degrees.",
-      severity = LogSeverity.Error,
-      context = LogContext.UI,
-      errorCode = FilterErrorCodes.InvalidRotationAngle
-    )
+    throw BaseError(message = s"Angle $angle is invalid. Angle must be a multiple of 90 degrees.", context = LogContext.UI, errorCode = FilterErrorCodes.InvalidRotationAngle)
   }
 
   private val normalizedAngle: Int = ((angle % 360) + 360) % 360

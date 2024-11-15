@@ -1,5 +1,6 @@
-package Services.CommandLineParsers.ImporterParser
+package UI.CommandLineParsers.ImporterParser
 
-import Services.CommandLineParsers.CommandLineParser
 import Services.Importers.Importer
+import UI.CommandLineParsers.CommandLineParser
+
 trait ImporterCommandLineParser extends CommandLineParser[Importer] {}

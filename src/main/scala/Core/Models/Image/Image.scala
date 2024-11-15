@@ -1,7 +1,7 @@
 package Core.Models.Image
 
-import Core.Models.Pixel.Pixel
 import Core.Errors.*
+import Core.Models.Pixel.Pixel
 
 /**
  * Abstract class representing an image composed of pixels arranged in rows and columns.
@@ -44,12 +44,7 @@ abstract class Image[P <: Pixel](val pixels: Vector[Vector[P]]) {
    */
   def getPixel(x: Int, y: Int): P = {
     if (x < 0 || y < 0 || y >= height || x >= width) {
-      throw BaseError(
-        message = s"Pixel coordinates ($x, $y) are out of bounds for image of size $width x $height.",
-        severity = LogSeverity.Error,
-        context = LogContext.System,
-        errorCode = GeneralErrorCodes.InvalidArgument
-      )
+      throw BaseError(message = s"Pixel coordinates ($x, $y) are out of bounds for image of size $width x $height.", context = LogContext.System, errorCode = GeneralErrorCodes.InvalidArgument)
     }
     pixels(y)(x)
   }

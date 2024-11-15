@@ -1,11 +1,11 @@
 package Services.Filters
 
-import org.scalatest.funsuite.AnyFunSuite
-import org.scalatest.BeforeAndAfterEach
-import scala.compiletime.uninitialized
-
 import Core.Models.Image.GrayscaleImage
 import Core.Models.Pixel.GrayscalePixel
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+
+import scala.compiletime.uninitialized
 
 class BrightnessFilterTests extends AnyFunSuite with BeforeAndAfterEach {
   var grayscaleImage: GrayscaleImage = uninitialized

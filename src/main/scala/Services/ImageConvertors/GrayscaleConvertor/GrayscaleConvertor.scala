@@ -1,7 +1,7 @@
 package Services.ImageConvertors.GrayscaleConvertor
 
-import Core.Models.Image.{RGBImage, GrayscaleImage}
-import Core.Models.Pixel.{RGBPixel, GrayscalePixel}
+import Core.Models.Image.{GrayscaleImage, RGBImage}
+import Core.Models.Pixel.{GrayscalePixel, RGBPixel}
 import Services.ImageConvertors.ImageConvertor
 
 abstract class GrayscaleConvertor extends ImageConvertor[RGBImage, GrayscaleImage] {

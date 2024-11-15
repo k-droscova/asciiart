@@ -1,11 +1,11 @@
 package Services.ImageConvertors.AsciiConvertor
 
-import org.scalatest.funsuite.AnyFunSuite
-import org.scalatest.BeforeAndAfterEach
-
-import scala.compiletime.uninitialized
 import Core.Models.Image.GrayscaleImage
 import Core.Models.Pixel.GrayscalePixel
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+
+import scala.compiletime.uninitialized
 
 class DefaultLinearAsciiConvertorTests extends AnyFunSuite with BeforeAndAfterEach {
 

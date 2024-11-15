@@ -2,13 +2,14 @@ package Services.CommandLineParsers.ImporterParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes}
 import Services.Importers.{FileImporter, RandomImporter}
-import org.scalatest.funsuite.AnyFunSuite
-import org.scalatest.BeforeAndAfterEach
-
-import scala.compiletime.uninitialized
-import org.mockito.Mockito.*
+import UI.CommandLineParsers.ImporterParser.ImporterCommandLineParserImpl
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockedConstruction
+import org.mockito.Mockito.*
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+
+import scala.compiletime.uninitialized
 class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
   private var parser: ImporterCommandLineParserImpl = uninitialized
   private var path: String = uninitialized

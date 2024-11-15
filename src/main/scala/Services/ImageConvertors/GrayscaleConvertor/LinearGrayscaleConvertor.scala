@@ -1,6 +1,6 @@
 package Services.ImageConvertors.GrayscaleConvertor
 
-import Core.Models.Pixel.{RGBPixel, GrayscalePixel}
+import Core.Models.Pixel.{GrayscalePixel, RGBPixel}
 
 class LinearGrayscaleConvertor extends GrayscaleConvertor {
 

@@ -2,11 +2,12 @@ package Services.Exporters
 
 import Core.Models.Image.AsciiImage
 import Core.Models.Pixel.AsciiPixel
-import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.BeforeAndAfterEach
-import scala.util.Using
-import scala.compiletime.uninitialized
+import org.scalatest.funsuite.AnyFunSuite
+
 import java.io.{ByteArrayOutputStream, PrintStream}
+import scala.compiletime.uninitialized
+import scala.util.Using
 
 class ConsoleExporterTests extends AnyFunSuite with BeforeAndAfterEach {
   private var exporter: ConsoleExporter = uninitialized

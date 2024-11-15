@@ -2,12 +2,12 @@ package Services.Importers
 
 import Core.Errors.{BaseError, ImageLoadingErrorCodes}
 import Core.Models.Image.RGBImage
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+
+import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
-import java.awt.image.BufferedImage
-
-import org.scalatest.funsuite.AnyFunSuite
-import org.scalatest.BeforeAndAfterEach
 import scala.compiletime.uninitialized
 class FileImporterTests extends AnyFunSuite with BeforeAndAfterEach {
   private var validJpgFile: File = uninitialized

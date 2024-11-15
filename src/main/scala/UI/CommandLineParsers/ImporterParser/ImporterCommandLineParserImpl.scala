@@ -1,8 +1,7 @@
-package Services.CommandLineParsers.ImporterParser
+package UI.CommandLineParsers.ImporterParser
 
-import Core.Errors.{BaseError, GeneralErrorCodes, LogContext, LogSeverity}
-import Services.Importers.{FileImporter, RandomImporter}
-import Services.Importers.Importer
+import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
+import Services.Importers.{FileImporter, Importer, RandomImporter}
 
 /**
  * Parses command line arguments related to importing images.
@@ -89,11 +88,6 @@ class ImporterCommandLineParserImpl extends ImporterCommandLineParser {
   }
 
   private def createBaseError(message: String): BaseError = {
-    BaseError(
-      message = message,
-      severity = LogSeverity.Error,
-      context = LogContext.UI,
-      errorCode = GeneralErrorCodes.InvalidArgument
-    )
+    BaseError(message = message, context = LogContext.UI, errorCode = GeneralErrorCodes.InvalidArgument)
   }
 }

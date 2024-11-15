@@ -1,19 +1,13 @@
 package Core.Errors
 
-import sourcecode.{File, Line, Name}
-
 /**
- * BaseError class representing an error that extends both Throwable and Loggable.
+ * BaseError class representing a structured error with message, context, and error code.
  */
 case class BaseError(
-                      override val message: String,
-                      override val severity: LogSeverity = LogSeverity.Error,
-                      override val context: LogContext,
-                      errorCode: ErrorCodes = GeneralErrorCodes.UnknownError,
-                      cause: Option[Throwable] = None
-                    )(implicit val file: File, val name: Name, val line: Line) extends Throwable(message, cause.orNull) with Loggable {
-
-  override def toString: String = {
-    super.toString.concat(s", Error code: ${errorCode.code}")
-  }
+                      message: String,
+                      context: LogContext,
+                      errorCode: ErrorCodes = GeneralErrorCodes.UnknownError
+                    ) extends Throwable(message) {
+  override def toString: String =
+    s"Error: $message | Context: ${context.getClass.getSimpleName.replace("$", "")} | Code: ${errorCode.code} (${errorCode.getClass.getSimpleName.replace("$", "")})"
 }

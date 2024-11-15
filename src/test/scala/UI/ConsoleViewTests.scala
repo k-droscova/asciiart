@@ -1,16 +1,15 @@
 package UI
 
-import Core.Errors.{BaseError, GeneralErrorCodes, LogContext, LogSeverity}
+import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
 import UI.ConsoleViewModel
-import org.scalatest.funsuite.AnyFunSuite
-import org.scalatest.BeforeAndAfterEach
-
-import scala.compiletime.uninitialized
-import org.mockito.Mockito.*
-import org.mockito.MockedConstruction
 import org.mockito.ArgumentMatchers.any
+import org.mockito.MockedConstruction
+import org.mockito.Mockito.*
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
 
 import java.io.{ByteArrayOutputStream, PrintStream}
+import scala.compiletime.uninitialized
 import scala.language.postfixOps
 
 class ConsoleViewTests extends AnyFunSuite with BeforeAndAfterEach {
@@ -42,12 +41,7 @@ class ConsoleViewTests extends AnyFunSuite with BeforeAndAfterEach {
     val outputStream = new ByteArrayOutputStream();
     System.setErr(new PrintStream(outputStream))
     viewModel = mockConstruction(classOf[ConsoleViewModel], (mockedInstance, _) => {
-      doAnswer(_ => throw BaseError(
-        "Testing error",
-        LogSeverity.Error,
-        LogContext.UI,
-        GeneralErrorCodes.UnknownError
-      )).when(mockedInstance).run(any())
+      doAnswer(_ => throw BaseError("Testing error", LogContext.UI, GeneralErrorCodes.UnknownError)).when(mockedInstance).run(any())
     })
     ConsoleView.main(args)
     assert(outputStream.toString.contains("Error: Testing error"))

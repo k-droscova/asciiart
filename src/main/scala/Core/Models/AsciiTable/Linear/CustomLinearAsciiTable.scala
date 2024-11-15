@@ -1,6 +1,6 @@
 package Core.Models.AsciiTable.Linear
 
-import Core.Errors.{BaseError, ASCIIConversionErrorCodes, LogContext, LogSeverity}
+import Core.Errors.{ASCIIConversionErrorCodes, BaseError, LogContext}
 
 /**
  * CustomLinearAsciiTable allows for a customizable ASCII conversion table.
@@ -10,11 +10,6 @@ import Core.Errors.{BaseError, ASCIIConversionErrorCodes, LogContext, LogSeverit
  */
 class CustomLinearAsciiTable(customChars: String) extends LinearAsciiTable(customChars) {
   if (customChars.isEmpty) {
-    throw BaseError(
-      message = "Custom ASCII characters cannot be empty.",
-      severity = LogSeverity.Error,
-      context = LogContext.UI,
-      errorCode = ASCIIConversionErrorCodes.InvalidTable
-    )
+    throw BaseError(message = "Custom ASCII characters cannot be empty.", context = LogContext.UI, errorCode = ASCIIConversionErrorCodes.InvalidTable)
   }
 }

@@ -1,8 +1,7 @@
 package Core.Models.Pixel
 
-import org.scalatest.funsuite.AnyFunSuite
-
 import Core.Errors.{BaseError, GeneralErrorCodes}
+import org.scalatest.funsuite.AnyFunSuite
 
 class GrayscalePixelTests extends AnyFunSuite {
 

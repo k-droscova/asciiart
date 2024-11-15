@@ -1,5 +1,6 @@
-package Services.CommandLineParsers.FilterParser
+package UI.CommandLineParsers.FilterParser
 
-import Services.CommandLineParsers.CommandLineParser
 import Services.Filters.Filter
+import UI.CommandLineParsers.CommandLineParser
+
 trait FilterCommandLineParser extends CommandLineParser[List[Filter]] {}

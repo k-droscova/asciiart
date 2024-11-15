@@ -1,8 +1,7 @@
-package Services.CommandLineParsers.ExporterParser
+package UI.CommandLineParsers.ExporterParser
 
-import Core.Errors.{BaseError, GeneralErrorCodes, LogContext, LogSeverity}
-import Services.Exporters.Exporter
-import Services.Exporters.{FileExporter, ConsoleExporter}
+import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
+import Services.Exporters.{ConsoleExporter, Exporter, FileExporter}
 
 /**
  * The `ExporterCommandLineParserImpl` class is responsible for parsing command line arguments related to
@@ -84,11 +83,6 @@ class ExporterCommandLineParserImpl extends ExporterCommandLineParser {
   }
 
   private def createBaseError(message: String): BaseError = {
-    BaseError(
-      message = message,
-      severity = LogSeverity.Error,
-      context = LogContext.UI,
-      errorCode = GeneralErrorCodes.InvalidArgument
-    )
+    BaseError(message = message, context = LogContext.UI, errorCode = GeneralErrorCodes.InvalidArgument)
   }
 }

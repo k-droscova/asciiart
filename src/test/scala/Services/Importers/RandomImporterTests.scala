@@ -2,9 +2,9 @@ package Services.Importers
 
 import Core.Errors.{BaseError, ImageLoadingErrorCodes}
 import Core.Models.Image.RGBImage
-
-import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+
 import scala.compiletime.uninitialized
 class RandomImporterTests extends AnyFunSuite with BeforeAndAfterEach {
   var importer: RandomImporter = uninitialized

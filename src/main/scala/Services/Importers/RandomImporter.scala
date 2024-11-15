@@ -1,8 +1,9 @@
 package Services.Importers
 
-import Core.Errors.{BaseError, ImageLoadingErrorCodes, LogContext, LogSeverity}
+import Core.Errors.{BaseError, ImageLoadingErrorCodes, LogContext}
 import Core.Models.Image.RGBImage
 import Core.Models.Pixel.RGBPixel
+
 import scala.util.Random
 
 /**
@@ -34,42 +35,22 @@ class RandomImporter(
   if (exactWidth.isDefined) {
     val w = exactWidth.get
     if (w < 0) {
-      throw BaseError(
-        message = s"Exact width must be greater than or equal to 0.",
-        severity = LogSeverity.Error,
-        context = LogContext.UI,
-        errorCode = ImageLoadingErrorCodes.InvalidImageDimensions
-      )
+      throw BaseError(message = s"Exact width must be greater than or equal to 0.", context = LogContext.UI, errorCode = ImageLoadingErrorCodes.InvalidImageDimensions)
     }
   } else {
     if (maxWidth < minWidth || minWidth < 0) {
-      throw BaseError(
-        message = s"Invalid dimensions: maxWidth must be greater than or equal to minWidth, and minWidth must be >= 0.",
-        severity = LogSeverity.Error,
-        context = LogContext.UI,
-        errorCode = ImageLoadingErrorCodes.InvalidImageDimensions
-      )
+      throw BaseError(message = s"Invalid dimensions: maxWidth must be greater than or equal to minWidth, and minWidth must be >= 0.", context = LogContext.UI, errorCode = ImageLoadingErrorCodes.InvalidImageDimensions)
     }
   }
 
   if (exactHeight.isDefined) {
     val h = exactHeight.get
     if (h < 0) {
-      throw BaseError(
-        message = s"Exact height must be greater than or equal to 0.",
-        severity = LogSeverity.Error,
-        context = LogContext.UI,
-        errorCode = ImageLoadingErrorCodes.InvalidImageDimensions
-      )
+      throw BaseError(message = s"Exact height must be greater than or equal to 0.", context = LogContext.UI, errorCode = ImageLoadingErrorCodes.InvalidImageDimensions)
     }
   } else {
     if (maxHeight < minHeight || minHeight < 0) {
-      throw BaseError(
-        message = s"Invalid dimensions: maxHeight must be greater than or equal to minHeight, and minHeight must be >= 0.",
-        severity = LogSeverity.Error,
-        context = LogContext.UI,
-        errorCode = ImageLoadingErrorCodes.InvalidImageDimensions
-      )
+      throw BaseError(message = s"Invalid dimensions: maxHeight must be greater than or equal to minHeight, and minHeight must be >= 0.", context = LogContext.UI, errorCode = ImageLoadingErrorCodes.InvalidImageDimensions)
     }
   }
 

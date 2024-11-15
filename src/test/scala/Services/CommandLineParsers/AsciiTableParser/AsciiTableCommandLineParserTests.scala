@@ -1,13 +1,14 @@
 package Services.CommandLineParsers.AsciiTableParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes}
-import Services.ImageConvertors.AsciiConvertor.{BourkeLinearAsciiConvertor, BorderedAsciiConvertor, DefaultLinearAsciiConvertor, CustomLinearAsciiConvertor}
-import org.scalatest.funsuite.AnyFunSuite
+import Services.ImageConvertors.AsciiConvertor.{BorderedAsciiConvertor, BourkeLinearAsciiConvertor, CustomLinearAsciiConvertor, DefaultLinearAsciiConvertor}
+import UI.CommandLineParsers.AsciiTableParser.AsciiTableCommandLineParserImpl
+import org.mockito.MockedConstruction
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.compiletime.uninitialized
-import org.mockito.Mockito._
-import org.mockito.MockedConstruction
 class AsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
   private var parser: AsciiTableCommandLineParserImpl = uninitialized
   private var defaultTableMock: MockedConstruction[DefaultLinearAsciiConvertor] = uninitialized

@@ -1,6 +1,6 @@
-package Services.CommandLineParsers.AsciiTableParser
+package UI.CommandLineParsers.AsciiTableParser
 
-import Core.Errors.{BaseError, GeneralErrorCodes, LogSeverity, LogContext}
+import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
 import Services.ImageConvertors.AsciiConvertor.*
 
 /**
@@ -117,11 +117,6 @@ class AsciiTableCommandLineParserImpl extends AsciiTableCommandLineParser {
   }
 
   private def createBaseError(message: String): BaseError = {
-    BaseError(
-      message = message,
-      severity = LogSeverity.Error,
-      context = LogContext.UI,
-      errorCode = GeneralErrorCodes.InvalidArgument
-    )
+    BaseError(message = message, context = LogContext.UI, errorCode = GeneralErrorCodes.InvalidArgument)
   }
 }

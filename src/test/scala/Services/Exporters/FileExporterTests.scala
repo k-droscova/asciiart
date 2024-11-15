@@ -1,16 +1,15 @@
 package Services.Exporters
 
+import Core.Errors.{BaseError, OutputErrorCodes}
 import Core.Models.Image.AsciiImage
 import Core.Models.Pixel.AsciiPixel
-
-import java.io.{File, PrintWriter}
-import java.nio.file.{Files, Path}
-import Core.Errors.{BaseError, OutputErrorCodes}
-import org.mockito.Mockito.*
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 
+import java.io.{File, PrintWriter}
+import java.nio.file.{Files, Path}
 import scala.compiletime.uninitialized
 import scala.util.Using
 class FileExporterTests extends AnyFunSuite with BeforeAndAfterEach {

@@ -1,12 +1,12 @@
 package Services.Filters
 
-import org.scalatest.funsuite.AnyFunSuite
-import org.scalatest.BeforeAndAfterEach
-
-import scala.compiletime.uninitialized
+import Core.Errors.{BaseError, FilterErrorCodes, GeneralErrorCodes}
 import Core.Models.Image.GrayscaleImage
 import Core.Models.Pixel.GrayscalePixel
-import Core.Errors.{BaseError, FilterErrorCodes, GeneralErrorCodes}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+
+import scala.compiletime.uninitialized
 class RotateFilterTests extends AnyFunSuite with BeforeAndAfterEach {
   var grayscaleImage: GrayscaleImage = uninitialized
   var filter: RotateFilter = uninitialized

@@ -1,14 +1,14 @@
 package Services.CommandLineParsers.FilterParser
 
-import Core.Errors.{BaseError, GeneralErrorCodes, FilterErrorCodes}
-
-import org.scalatest.funsuite.AnyFunSuite
-import org.scalatest.BeforeAndAfterEach
+import Core.Errors.{BaseError, FilterErrorCodes, GeneralErrorCodes}
 import Services.Filters.{BrightnessFilter, InvertFilter, RotateFilter}
+import UI.CommandLineParsers.FilterParser.FilterCommandLineParserImpl
+import org.mockito.MockedConstruction
+import org.mockito.Mockito.*
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.compiletime.uninitialized
-import org.mockito.Mockito._
-import org.mockito.MockedConstruction
 class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
   private var parser: FilterCommandLineParserImpl = uninitialized
   private var brightnessMock: MockedConstruction[BrightnessFilter] = uninitialized
