@@ -1,5 +1,24 @@
 package UI.CommandLineParsers.ExporterParser.SpecializedExporterParsers
 
-class ConsoleExporterCommandLineParser {
+import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
+import Services.Exporters.ConsoleExporter
+import Services.Exporters.Exporter
 
+/**
+ * Specialized parser for the `--output-console` argument.
+ */
+class ConsoleExporterCommandLineParser extends SpecializedExporterCommandLineParser {
+  override def parse(args: Array[String]): Either[BaseError, Option[Exporter]] = {
+    val consoleArgCount = args.count(_ == "--output-console")
+
+    consoleArgCount match {
+      case 0 => Right(None) // Argument not found
+      case 1 => Right(Some(new ConsoleExporter()))
+      case _ => Left(BaseError(
+        message = "Only one --output-console argument is allowed.",
+        context = LogContext.UI,
+        errorCode = GeneralErrorCodes.InvalidArgument
+      ))
+    }
+  }
 }

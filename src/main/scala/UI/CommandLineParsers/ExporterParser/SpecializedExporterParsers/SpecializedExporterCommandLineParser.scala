@@ -1,5 +1,6 @@
 package UI.CommandLineParsers.ExporterParser.SpecializedExporterParsers
 
-trait SpecializedExporterCommandLineParser {
-
-}
+import Core.Errors.BaseError
+import Services.Exporters.Exporter
+import UI.CommandLineParsers.SpecializedCommandLineParser
+trait SpecializedExporterCommandLineParser extends SpecializedCommandLineParser[Exporter] {}
