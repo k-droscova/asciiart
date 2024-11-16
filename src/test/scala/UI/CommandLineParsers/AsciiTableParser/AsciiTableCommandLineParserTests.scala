@@ -1,166 +1,114 @@
-package Services.CommandLineParsers.AsciiTableParser
+package UI.CommandLineParsers.AsciiTableParser
 
-import Core.Errors.{BaseError, GeneralErrorCodes}
+import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
+import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
 import UI.CommandLineParsers.AsciiTableParser.AsciiTableCommandLineParserImpl
-import org.mockito.MockedConstruction
+import UI.CommandLineParsers.AsciiTableParser.SpecializedAsciiParsers.{CustomLinearAsciiTableCommandLineParser, DefaultLinearAsciiTableCommandLineParser, BourkeLinearAsciiTableCommandLineParser, BorderedAsciiTableCommandLineParser}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.compiletime.uninitialized
-/*class AsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
+
+class AsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
+
+  private val customParser = mock(classOf[CustomLinearAsciiTableCommandLineParser])
+  private val defaultParser = mock(classOf[DefaultLinearAsciiTableCommandLineParser])
+  private val bourkeParser = mock(classOf[BourkeLinearAsciiTableCommandLineParser])
+  private val borderedParser = mock(classOf[BorderedAsciiTableCommandLineParser])
+  private val parserList = List(customParser, defaultParser, bourkeParser, borderedParser)
   private var parser: AsciiTableCommandLineParserImpl = uninitialized
-  private var defaultTableMock: MockedConstruction[DefaultLinearAsciiConvertor] = uninitialized
-  private var customTableMock: MockedConstruction[CustomLinearAsciiConvertor] = uninitialized
-  private var borderedTableMock: MockedConstruction[BorderedAsciiConvertor] = uninitialized
-  private var bourkeTableMock: MockedConstruction[BourkeLinearAsciiConvertor] = uninitialized
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    parser = new AsciiTableCommandLineParserImpl()
+    parser = new AsciiTableCommandLineParserImpl(parserList)
   }
 
   override def afterEach(): Unit = {
     super.afterEach()
     parser = null
+    reset(customParser, defaultParser, bourkeParser, borderedParser)
   }
 
-  test("No input returns default table") {
-    defaultTableMock = mockConstruction(classOf[DefaultLinearAsciiConvertor], (_, _) => {})
-    val converter = parser.parse(Array("random", "input", "for", "testing"))
-    assert(converter.isInstanceOf[DefaultLinearAsciiConvertor])
-    defaultTableMock.close()
-  }
+  test("All parsers return None (no input provided)") {
+    parserList.foreach(p => when(p.parse(any())).thenReturn(Right(None)))
 
-  test("Valid input with default table") {
-    defaultTableMock = mockConstruction(classOf[DefaultLinearAsciiConvertor], (_, _) => {})
-    val converter = parser.parse(Array("--table=default"))
-    assert(converter.isInstanceOf[DefaultLinearAsciiConvertor])
-    defaultTableMock.close()
-  }
-
-  test("Empty input returns default table") {
-    defaultTableMock = mockConstruction(classOf[DefaultLinearAsciiConvertor], (_, _) => {})
-    val converter = parser.parse(Array.empty)
-    assert(converter.isInstanceOf[DefaultLinearAsciiConvertor])
-    defaultTableMock.close()
-  }
-
-  test("Input with only whitespace returns default table") {
-    defaultTableMock = mockConstruction(classOf[DefaultLinearAsciiConvertor], (_, _) => {})
-    val converter = parser.parse(Array("          "))
-    assert(converter.isInstanceOf[DefaultLinearAsciiConvertor])
-    defaultTableMock.close()
-  }
-
-  test("Valid input with bourke table") {
-    bourkeTableMock = mockConstruction(classOf[BourkeLinearAsciiConvertor], (_, _) => {})
-    val converter = parser.parse(Array("--table=bourke"))
-    assert(converter.isInstanceOf[BourkeLinearAsciiConvertor])
-    bourkeTableMock.close()
-  }
-
-  test("Valid input with custom table") {
-    customTableMock = mockConstruction(classOf[CustomLinearAsciiConvertor], (mocked, context) => {
-      assert("customchars" == context.arguments.get(0).asInstanceOf[String])
-    })
-    val converter = parser.parse(Array("--custom-table", "customchars"))
-    assert(converter.isInstanceOf[CustomLinearAsciiConvertor])
-    customTableMock.close()
-  }
-
-  test("Valid input with bordered table and borders") {
-    val converter = parser.parse(Array("--table=bordered", "chars", "[1,2,3,4]"))
-    assert(converter.isInstanceOf[BorderedAsciiConvertor])
-    val convertor: BorderedAsciiConvertor = converter.asInstanceOf[BorderedAsciiConvertor]
-    assert(convertor.characters == "chars")
-    assert(convertor.borders == List(1,2,3,4))
-  }
-
-  test("Whitespace handling in custom table argument") {
-    customTableMock = mockConstruction(classOf[CustomLinearAsciiConvertor], (mocked, context) => {
-      assert(" chars " == context.arguments.get(0).asInstanceOf[String])
-    })
-    val converter = parser.parse(Array("--custom-table", " chars "))
-    assert(converter.isInstanceOf[CustomLinearAsciiConvertor])
-    customTableMock.close()
-  }
-
-  test("Invalid table type") {
     val thrown = intercept[BaseError] {
-      parser.parse(Array("--table=invalid"))
+      parser.parse(Array.empty)
     }
+
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Invalid table argument."))
+    assert(thrown.message.contains("You must specify a table type (--custom-table, --table=default, --table=bourke, or --table=bordered)."))
+
+    parserList.foreach(p => verify(p).parse(Array.empty))
   }
 
-  test("Multiple table arguments") {
+  test("First parser returns Some, others return None (valid custom table)") {
+    when(customParser.parse(any())).thenReturn(Right(Some(mock(classOf[AsciiConvertor]))))
+    parserList.tail.foreach(p => when(p.parse(any())).thenReturn(Right(None)))
+
+    val result = parser.parse(Array("--custom-table", "custom-chars"))
+    assert(result.isInstanceOf[AsciiConvertor])
+
+    verify(customParser).parse(Array("--custom-table", "custom-chars"))
+    parserList.tail.foreach(p => verify(p).parse(Array("--custom-table", "custom-chars")))
+  }
+
+  test("Only one parser returns Some (valid bordered table)") {
+    when(borderedParser.parse(any())).thenReturn(Right(Some(mock(classOf[AsciiConvertor]))))
+    parserList.filterNot(_ == borderedParser).foreach(p => when(p.parse(any())).thenReturn(Right(None)))
+
+    val result = parser.parse(Array("--table=bordered", "custom-chars", "[1,2,3]"))
+    assert(result.isInstanceOf[AsciiConvertor])
+
+    verify(borderedParser).parse(Array("--table=bordered", "custom-chars", "[1,2,3]"))
+    parserList.filterNot(_ == borderedParser).foreach(p => verify(p).parse(Array("--table=bordered", "custom-chars", "[1,2,3]")))
+  }
+
+  test("Multiple parsers return Some (conflicting inputs)") {
+    when(customParser.parse(any())).thenReturn(Right(Some(mock(classOf[AsciiConvertor]))))
+    when(defaultParser.parse(any())).thenReturn(Right(Some(mock(classOf[AsciiConvertor]))))
+
     val thrown = intercept[BaseError] {
-      parser.parse(Array("--table=default", "--custom-table", "chars"))
+      parser.parse(Array("--custom-table", "custom-chars", "--table=default"))
     }
+
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Only one table can be specified"))
+    assert(thrown.message.contains("Only one table type can be specified (--custom-table, --table=default, --table=bourke, or --table=bordered)."))
+
+    verify(customParser).parse(Array("--custom-table", "custom-chars", "--table=default"))
+    verify(defaultParser).parse(Array("--custom-table", "custom-chars", "--table=default"))
   }
 
-  test("Missing characters for custom table") {
+  test("All parsers return errors") {
+    when(customParser.parse(any())).thenReturn(Left(BaseError("Custom table error", LogContext.UI, GeneralErrorCodes.InvalidArgument)))
+    when(defaultParser.parse(any())).thenReturn(Left(BaseError("Default table error", LogContext.UI, GeneralErrorCodes.InvalidArgument)))
+    when(bourkeParser.parse(any())).thenReturn(Left(BaseError("Bourke table error", LogContext.UI, GeneralErrorCodes.InvalidArgument)))
+    when(borderedParser.parse(any())).thenReturn(Left(BaseError("Bordered table error", LogContext.UI, GeneralErrorCodes.InvalidArgument)))
+
     val thrown = intercept[BaseError] {
-      parser.parse(Array("--custom-table"))
+      parser.parse(Array.empty)
     }
+
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Custom characters must be specified after --custom-table argument."))
+    assert(thrown.message.contains("Only one table type can be specified (--custom-table, --table=default, --table=bourke, or --table=bordered)."))
+
+    parserList.foreach(p => verify(p).parse(Array.empty))
   }
 
-  test("Empty characters for custom table") {
-    val thrown = intercept[BaseError] {
-      parser.parse(Array("--custom-table", ""))
-    }
-    assert(thrown.message.contains("Custom ASCII characters cannot be empty."))
-  }
+  test("One parser returns Some, another parser returns an error") {
+    when(customParser.parse(any())).thenReturn(Left(BaseError("Custom table error", LogContext.UI, GeneralErrorCodes.InvalidArgument)))
+    when(defaultParser.parse(any())).thenReturn(Right(Some(mock(classOf[AsciiConvertor]))))
 
-  test("Missing character argument for bordered table") {
     val thrown = intercept[BaseError] {
-      parser.parse(Array("--table=bordered"))
+      parser.parse(Array.empty)
     }
+
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Custom characters must be specified after --table=bordered argument."))
-  }
+    assert(thrown.message.contains("Only one table type can be specified (--custom-table, --table=default, --table=bourke, or --table=bordered)."))
 
-  test("Missing border argument for bordered table") {
-    val thrown = intercept[BaseError] {
-      parser.parse(Array("--table=bordered", "jchebchjeb"))
-    }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Border characters must be specified after --table=bordered argument."))
-  }
-
-  test("Invalid string border argument for bordered table") {
-    val thrown = intercept[BaseError] {
-      parser.parse(Array("--table=bordered", "jchebchjeb", "[abc,1,1,1,1]"))
-    }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Border characters must be be in this pattern: [int,int,int,...]"))
-  }
-
-  test("Invalid non int border argument for bordered table") {
-    val thrown = intercept[BaseError] {
-      parser.parse(Array("--table=bordered", "jchebchjeb", "[123.23,11,11,111]"))
-    }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Border characters must be be in this pattern: [int,int,int,...]"))
-  }
-
-  test("Invalid border argument combination for bordered table - mismatch in char length and border length") {
-    val thrown = intercept[BaseError] {
-      parser.parse(Array("--table=bordered", "abcd", "[]"))
-    }
-    assert(thrown.message.contains("Invalid arguments for Bordered Ascii Table:"))
-  }
-
-  test("Invalid border argument combination for bordered table - empty string") {
-    val thrown = intercept[BaseError] {
-      parser.parse(Array("--table=bordered", "", "[]"))
-    }
-    assert(thrown.message.contains("Invalid Bordered Ascii Table: characters string cannot be empty."))
+    verify(customParser).parse(Array.empty)
+    verify(defaultParser).parse(Array.empty)
   }
 }
-*/
