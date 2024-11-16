@@ -39,7 +39,7 @@ class AsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEa
     }
 
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("You must specify a table type (--custom-table, --table=default, --table=bourke, or --table=bordered)."))
+    assert(thrown.message.contains("You must specify a table type (--table=custom, --table=default, --table=bourke, or --table=bordered)."))
 
     parserList.foreach(p => verify(p).parse(Array.empty))
   }

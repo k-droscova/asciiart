@@ -18,7 +18,7 @@ declare -A NEGATIVE_TEST_CASES=(
   ["nonexistent_image"]="--image $IMAGE_PATH_NONEXISTENT --output-file $OUTPUT_DIR/nonexistent_image.txt"
   ["unsupported_format"]="--image $IMAGE_PATH_UNSUPPORTED --output-file $OUTPUT_DIR/unsupported_format.txt"
   ["invalid_table"]="--image $IMAGE_PATH --table=invalid --output-file $OUTPUT_DIR/invalid_table.txt"
-  ["multiple_tables"]="--image $IMAGE_PATH --table=default --custom-table \".:-=+*#%@\" --output-file $OUTPUT_DIR/multiple_tables.txt"
+  ["multiple_tables"]="--image $IMAGE_PATH --table=default --table=custom \".:-=+*#%@\" --output-file $OUTPUT_DIR/multiple_tables.txt"
   ["missing_bordered_chars"]="--image $IMAGE_PATH --table=bordered --output-file $OUTPUT_DIR/missing_bordered_chars.txt"
   ["invalid_bordered_borders"]="--image $IMAGE_PATH --table=bordered \".:-=+*#%@\" \"[abc,1,1,1,1]\" --output-file $OUTPUT_DIR/invalid_bordered_borders.txt"
   ["missing_brightness"]="--image $IMAGE_PATH --output-file $OUTPUT_DIR/missing_brightness.txt --brightness"
@@ -26,7 +26,7 @@ declare -A NEGATIVE_TEST_CASES=(
   ["missing_rotation"]="--image $IMAGE_PATH --output-file $OUTPUT_DIR/missing_rotation.txt --rotate"
   ["invalid_rotation"]="--image $IMAGE_PATH --output-file $OUTPUT_DIR/invalid_rotation.txt --rotate notanumber"
   ["conflicting_image_and_random"]="--image $IMAGE_PATH --image-random --output-file $OUTPUT_DIR/conflicting_image_and_random.txt"
-  ["missing_custom_table_chars"]="--image $IMAGE_PATH --custom-table --output-file $OUTPUT_DIR/missing_custom_table_chars.txt"
+  ["missing_custom_table_chars"]="--image $IMAGE_PATH --table=custom --output-file $OUTPUT_DIR/missing_custom_table_chars.txt"
   ["non_numeric_brightness"]="--image $IMAGE_PATH --brightness abc --output-file $OUTPUT_DIR/non_numeric_brightness.txt"
   ["non_numeric_rotation"]="--image $IMAGE_PATH --rotate abc --output-file $OUTPUT_DIR/non_numeric_rotation.txt"
 )

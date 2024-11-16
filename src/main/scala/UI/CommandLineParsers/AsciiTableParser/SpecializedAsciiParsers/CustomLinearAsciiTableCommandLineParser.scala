@@ -6,18 +6,19 @@ import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
 
 class CustomLinearAsciiTableCommandLineParser extends SpecializedAsciiTableCommandLineParser {
   override def parse(args: Array[String]): Either[BaseError, Option[AsciiConvertor]] = {
-    val customIndices = args.zipWithIndex.collect { case ("--custom-table", index) => index }
+    // Find the indices of `--table=custom`
+    val customIndices = args.zipWithIndex.collect { case (arg, index) if arg == "--table=custom" => index }
 
     customIndices.length match {
       case 0 =>
-        // No `--custom-table` argument
+        // No `--table=custom` argument
         Right(None)
       case 1 =>
-        // Exactly one `--custom-table` argument, validate the next value
+        // Exactly one `--table=custom` argument, validate the next value
         val customIndex = customIndices.head
         if (customIndex + 1 >= args.length || args(customIndex + 1).startsWith("--")) {
           Left(BaseError(
-            message = "Custom characters must be specified after --custom-table argument.",
+            message = "Custom characters must be specified after --table=custom.",
             context = LogContext.UI,
             errorCode = GeneralErrorCodes.InvalidArgument
           ))
@@ -27,9 +28,9 @@ class CustomLinearAsciiTableCommandLineParser extends SpecializedAsciiTableComma
           Right(Some(new AsciiConvertor(new CustomLinearAsciiTable(chars))))
         }
       case _ =>
-        // More than one `--custom-table` argument
+        // More than one `--table=custom` argument
         Left(BaseError(
-          message = "Only one --custom-table argument is allowed.",
+          message = "Only one --table=custom argument is allowed.",
           context = LogContext.UI,
           errorCode = GeneralErrorCodes.InvalidArgument
         ))

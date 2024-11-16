@@ -17,7 +17,7 @@ class AsciiTableCommandLineParserImpl(
 
   override protected def noInputError(): BaseError = {
     BaseError(
-      message = "You must specify a table type (--custom-table, --table=default, --table=bourke, or --table=bordered).",
+      message = "You must specify a table type (--table=custom, --table=default, --table=bourke, or --table=bordered).",
       context = LogContext.UI,
       errorCode = GeneralErrorCodes.InvalidArgument
     )

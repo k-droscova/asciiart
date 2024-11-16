@@ -16,7 +16,7 @@ declare -A TEST_CASES=(
   ["table_default"]="--image $IMAGE_PATH --table=default --output-file $OUTPUT_DIR/saturn_table_default.txt"
   ["table_bourke"]="--image $IMAGE_PATH --table=bourke --output-file $OUTPUT_DIR/saturn_table_bourke.txt"
   ["table_bordered"]="--image $IMAGE_PATH --table=bordered \" .:-=+*#%@\" \"[10,20,30,40,50,60,70,80,240]\" --output-file $OUTPUT_DIR/saturn_table_bordered.txt"
-  ["custom_table"]="--image $IMAGE_PATH --custom-table \".:-=+*#%@\" --output-file $OUTPUT_DIR/saturn_custom_table.txt"
+  ["custom_table"]="--image $IMAGE_PATH --table=custom \".:-=+*#%@\" --output-file $OUTPUT_DIR/saturn_custom_table.txt"
   ["brightness_positive"]="--image $IMAGE_PATH --output-file $OUTPUT_DIR/saturn_brightness_positive.txt --brightness 80"
   ["brightness_negative"]="--image $IMAGE_PATH --output-file $OUTPUT_DIR/saturn_brightness_negative.txt --brightness -80"
   ["rotate_90"]="--image $IMAGE_PATH --output-file $OUTPUT_DIR/saturn_rotate_90.txt --rotate 90"
