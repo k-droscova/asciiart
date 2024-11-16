@@ -3,4 +3,4 @@ package UI.CommandLineParsers.ExporterParser.SpecializedExporterParsers
 import Core.Errors.BaseError
 import Services.Exporters.Exporter
 import UI.CommandLineParsers.SpecializedCommandLineParser
-trait SpecializedExporterCommandLineParser extends SpecializedCommandLineParser[Exporter] {}
+trait SpecializedExporterCommandLineParser[T <: Exporter] extends SpecializedCommandLineParser[T]

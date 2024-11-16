@@ -1,100 +1,111 @@
-package Services.CommandLineParsers.ExporterParser
+package UI.CommandLineParsers.ExporterParser
 
-import Core.Errors.{BaseError, GeneralErrorCodes}
-import Services.Exporters.{ConsoleExporter, FileExporter}
+import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
+import Services.Exporters.{ConsoleExporter, Exporter, FileExporter}
 import UI.CommandLineParsers.ExporterParser.ExporterCommandLineParserImpl
-import org.mockito.MockedConstruction
+import UI.CommandLineParsers.ExporterParser.SpecializedExporterParsers.*
 import org.mockito.Mockito.*
+import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.compiletime.uninitialized
 
 class ExporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
+  private val fileExporterParser: SpecializedExporterCommandLineParser[FileExporter] = mock(classOf[FileExporterCommandLineParser])
+  private val consoleExporterParser: SpecializedExporterCommandLineParser[ConsoleExporter] = mock(classOf[ConsoleExporterCommandLineParser])
+  private val parserList: List[SpecializedExporterCommandLineParser[? <: Exporter]] = List(fileExporterParser, consoleExporterParser)
   private var parser: ExporterCommandLineParserImpl = uninitialized
-  private var fileMock: MockedConstruction[FileExporter] = uninitialized
-  private var consoleMock: MockedConstruction[ConsoleExporter] = uninitialized
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    parser = new ExporterCommandLineParserImpl()
+    parser = new ExporterCommandLineParserImpl(parserList)
   }
 
   override def afterEach(): Unit = {
     super.afterEach()
     parser = null
+    reset(fileExporterParser, consoleExporterParser)
   }
 
-  test("Valid input with single output file path") {
-    fileMock = mockConstruction(classOf[FileExporter], (mocked, context) => {
-      assert("path/to/output.txt" == context.arguments.get(0).asInstanceOf[String])
-    })
-    val exporter = parser.parse(Array("--output-file", "path/to/output.txt"))
+  test("Both parsers return None (no input provided)") {
+    when(fileExporterParser.parse(any())).thenReturn(Right(None))
+    when(consoleExporterParser.parse(any())).thenReturn(Right(None))
+
+    val thrown = intercept[BaseError] {
+      parser.parse(Array.empty)
+    }
+
+    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
+    assert(thrown.message.contains("You must specify either --output-file or --output-console."))
+  }
+
+  test("First parser returns Some, second parser returns None (valid file exporter)") {
+    when(fileExporterParser.parse(any())).thenReturn(Right(Some(mock(classOf[FileExporter]))))
+    when(consoleExporterParser.parse(any())).thenReturn(Right(None))
+
+    val exporter = parser.parse(Array("--output-file", "output.txt"))
     assert(exporter.isInstanceOf[FileExporter])
-    fileMock.close()
+
+    verify(fileExporterParser).parse(Array("--output-file", "output.txt"))
+    verify(consoleExporterParser).parse(Array("--output-file", "output.txt"))
   }
 
-  test("Whitespace handling") {
-    fileMock = mockConstruction(classOf[FileExporter], (mocked, context) => {
-      assert("path/to/output.txt" == context.arguments.get(0).asInstanceOf[String])
-    })
-    val exporter = parser.parse(Array("--output-file", "       path/to/output.txt    "))
-    assert(exporter.isInstanceOf[FileExporter])
-    fileMock.close()
-  }
+  test("First parser returns None, second parser returns Some (valid console exporter)") {
+    when(fileExporterParser.parse(any())).thenReturn(Right(None))
+    when(consoleExporterParser.parse(any())).thenReturn(Right(Some(mock(classOf[ConsoleExporter]))))
 
-  test("Valid input with output to console") {
-    consoleMock = mockConstruction(classOf[ConsoleExporter], (mocked, context) => {})
     val exporter = parser.parse(Array("--output-console"))
     assert(exporter.isInstanceOf[ConsoleExporter])
-    consoleMock.close()
+
+    verify(fileExporterParser).parse(Array("--output-console"))
+    verify(consoleExporterParser).parse(Array("--output-console"))
   }
 
-  test("Mixed input with both output file and console") {
+  test("Both parsers return Some (conflicting inputs)") {
+    when(fileExporterParser.parse(any())).thenReturn(Right(Some(mock(classOf[FileExporter]))))
+    when(consoleExporterParser.parse(any())).thenReturn(Right(Some(mock(classOf[ConsoleExporter]))))
+
     val thrown = intercept[BaseError] {
-      parser.parse(Array("--output-file", "path/to/output.txt", "--output-console"))
+      parser.parse(Array("--output-file", "output.txt", "--output-console"))
     }
+
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Cannot specify both --output-file and --output-console."))
   }
 
-  test("Multiple --output-file arguments") {
-    val thrown = intercept[BaseError] {
-      parser.parse(Array("--output-file", "path/to/output.txt", "--output-file", "another/path/to/output.txt"))
-    }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Only one --output-file argument is allowed."))
-  }
+  test("Both parsers return errors") {
+    when(fileExporterParser.parse(any())).thenReturn(Left(BaseError("File error", LogContext.UI, GeneralErrorCodes.InvalidArgument)))
+    when(consoleExporterParser.parse(any())).thenReturn(Left(BaseError("Console error", LogContext.UI, GeneralErrorCodes.InvalidArgument)))
 
-  test("No arguments") {
     val thrown = intercept[BaseError] {
       parser.parse(Array.empty)
     }
+
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("You must specify either --output-file or --output-console."))
+    assert(thrown.message.contains("Cannot specify both --output-file and --output-console."))
   }
 
-  test("Invalid flag") {
+  test("First parser returns Some, second parser returns error") {
+    when(fileExporterParser.parse(any())).thenReturn(Right(Some(mock(classOf[FileExporter]))))
+    when(consoleExporterParser.parse(any())).thenReturn(Left(BaseError("Invalid console argument", LogContext.UI, GeneralErrorCodes.InvalidArgument)))
+
     val thrown = intercept[BaseError] {
-      parser.parse(Array("--invalidFlag"))
+      parser.parse(Array.empty)
     }
+
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("You must specify either --output-file or --output-console."))
+    assert(thrown.message.contains("Cannot specify both --output-file and --output-console."))
   }
 
-  test("Only --output-file without path") {
-    val thrown = intercept[BaseError] {
-      parser.parse(Array("--output-file"))
-    }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Output filepath was not specified after --output-file argument."))
-  }
-  
+  test("First parser returns error, second parser returns Some") {
+    when(fileExporterParser.parse(any())).thenReturn(Left(BaseError("Invalid file argument", LogContext.UI, GeneralErrorCodes.InvalidArgument)))
+    when(consoleExporterParser.parse(any())).thenReturn(Right(Some(mock(classOf[ConsoleExporter]))))
 
-  test("Multiple arguments with both --output-file and --output-console") {
     val thrown = intercept[BaseError] {
-      parser.parse(Array("--rotate", "+90", "--output-file", "path/to/output.txt", "--image-random", "--output-console"))
+      parser.parse(Array.empty)
     }
+
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Cannot specify both --output-file and --output-console."))
   }

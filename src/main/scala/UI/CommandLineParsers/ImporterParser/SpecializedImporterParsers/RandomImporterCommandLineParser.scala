@@ -4,8 +4,8 @@ import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
 import Services.Importers.Importer
 import Services.Importers.RandomImporters.RandomImporter
 import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.SpecializedImporterCommandLineParser
-class RandomImporterCommandLineParser extends SpecializedImporterCommandLineParser {
-  override def parse(args: Array[String]): Either[BaseError, Option[Importer]] = {
+class RandomImporterCommandLineParser extends SpecializedImporterCommandLineParser[RandomImporter] {
+  override def parse(args: Array[String]): Either[BaseError, Option[RandomImporter]] = {
     val randomArgsCount = args.count(_ == "--image-random")
 
     if (randomArgsCount > 1) {

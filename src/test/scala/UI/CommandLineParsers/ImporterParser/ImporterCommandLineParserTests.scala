@@ -3,6 +3,7 @@ package UI.CommandLineParsers.ImporterParser
 import Core.Errors.{BaseError, GeneralErrorCodes, ImageLoadingErrorCodes, LogContext}
 import Services.Importers.FileImporters.FileImporter
 import Services.Importers.RandomImporters.RandomImporter
+import Services.Importers.Importer
 import UI.CommandLineParsers.ImporterParser.ImporterCommandLineParserImpl
 import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.{FileImporterCommandLineParser, RandomImporterCommandLineParser, SpecializedImporterCommandLineParser}
 import org.mockito.ArgumentMatchers.any
@@ -14,9 +15,9 @@ import org.scalatest.funsuite.AnyFunSuite
 import scala.compiletime.uninitialized
 
 class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
-  private val randomImporterParser: SpecializedImporterCommandLineParser = mock(classOf[RandomImporterCommandLineParser])
-  private val fileImporterParser: SpecializedImporterCommandLineParser = mock(classOf[FileImporterCommandLineParser])
-  private var parserList: List[SpecializedImporterCommandLineParser] = List(randomImporterParser, fileImporterParser)
+  private val randomImporterParser: SpecializedImporterCommandLineParser[RandomImporter] = mock(classOf[RandomImporterCommandLineParser])
+  private val fileImporterParser: SpecializedImporterCommandLineParser[FileImporter] = mock(classOf[FileImporterCommandLineParser])
+  private val parserList: List[SpecializedImporterCommandLineParser[? <: Importer]] = List(randomImporterParser, fileImporterParser)
   private var parser: ImporterCommandLineParserImpl = uninitialized
 
   override def beforeEach(): Unit = {

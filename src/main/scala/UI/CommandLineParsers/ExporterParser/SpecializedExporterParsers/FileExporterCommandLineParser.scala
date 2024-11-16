@@ -6,8 +6,8 @@ import Services.Exporters.{FileExporter, Exporter}
 /**
  * Specialized parser for the `--output-file` argument.
  */
-class FileExporterCommandLineParser extends SpecializedExporterCommandLineParser {
-  override def parse(args: Array[String]): Either[BaseError, Option[Exporter]] = {
+class FileExporterCommandLineParser extends SpecializedExporterCommandLineParser[FileExporter] {
+  override def parse(args: Array[String]): Either[BaseError, Option[FileExporter]] = {
     val fileArgs = args.sliding(2).filter(_.head == "--output-file").toList
 
     if (fileArgs.size > 1) {

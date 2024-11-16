@@ -10,4 +10,4 @@ import UI.CommandLineParsers.SpecializedCommandLineParser
  * The parser is responsible for detecting its specific argument(s) in the input, validating them,
  * and returning the appropriate result.
  */
-trait SpecializedImporterCommandLineParser extends SpecializedCommandLineParser[Importer]
+trait SpecializedImporterCommandLineParser[T <: Importer] extends SpecializedCommandLineParser[T]

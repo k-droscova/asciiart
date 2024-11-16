@@ -12,7 +12,7 @@ import UI.CommandLineParsers.SingleInputCommandLineParser
  * to handle different export options (`--output-file` and `--output-console`).
  */
 class ExporterCommandLineParserImpl(
-                                     parsers: List[SpecializedExporterCommandLineParser] = List(
+                                     parsers: List[SpecializedExporterCommandLineParser[? <: Exporter]] = List(
                                        new FileExporterCommandLineParser(),
                                        new ConsoleExporterCommandLineParser()
                                      )

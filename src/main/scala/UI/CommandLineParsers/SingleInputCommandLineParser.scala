@@ -3,7 +3,7 @@ package UI.CommandLineParsers
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
 
 abstract class SingleInputCommandLineParser[T](
-                                                private val parsers: List[SpecializedCommandLineParser[T]]
+                                                private val parsers: List[SpecializedCommandLineParser[? <: T]]
                                               ) extends CommandLineParser[T] {
   override def parse(args: Array[String]): T = {
     val results = parsers.map(_.parse(args))

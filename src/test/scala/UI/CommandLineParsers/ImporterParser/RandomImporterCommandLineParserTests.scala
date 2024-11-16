@@ -1,4 +1,4 @@
-package UI.CommandLineParsers.ImporterParser.RandomImporterParser
+package UI.CommandLineParsers.ImporterParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes}
 import Services.Importers.Importer

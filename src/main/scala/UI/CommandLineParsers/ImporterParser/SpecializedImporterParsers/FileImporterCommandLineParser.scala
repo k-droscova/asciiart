@@ -14,9 +14,9 @@ class FileImporterCommandLineParser(
                                        path => new JPEGFileImporter(path),
                                        path => new PNGFileImporter(path)
                                      )
-                                   ) extends SpecializedImporterCommandLineParser {
+                                   ) extends SpecializedImporterCommandLineParser[FileImporter] {
 
-  override def parse(args: Array[String]): Either[BaseError, Option[Importer]] = {
+  override def parse(args: Array[String]): Either[BaseError, Option[FileImporter]] = {
     val fileArgs = args.sliding(2).filter(_.head == "--image").toList
 
     if (fileArgs.size > 1) {
@@ -49,9 +49,9 @@ class FileImporterCommandLineParser(
     )
   }
 
-  private def constructImportersOneByOne(importers: List[String => FileImporter], filePath: String): Option[Either[BaseError, Option[Importer]]] = {
+  private def constructImportersOneByOne(importers: List[String => FileImporter], filePath: String): Option[Either[BaseError, Option[FileImporter]]] = {
     println("constructing one by one")
-    boundary[Option[Either[BaseError, Option[Importer]]]]:
+    boundary[Option[Either[BaseError, Option[FileImporter]]]]:
       for (importerFactory <- importers) {
         try {
           println("constructing " + importerFactory.toString())

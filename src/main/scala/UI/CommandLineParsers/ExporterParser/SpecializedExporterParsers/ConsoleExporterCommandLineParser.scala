@@ -7,8 +7,8 @@ import Services.Exporters.Exporter
 /**
  * Specialized parser for the `--output-console` argument.
  */
-class ConsoleExporterCommandLineParser extends SpecializedExporterCommandLineParser {
-  override def parse(args: Array[String]): Either[BaseError, Option[Exporter]] = {
+class ConsoleExporterCommandLineParser extends SpecializedExporterCommandLineParser[ConsoleExporter] {
+  override def parse(args: Array[String]): Either[BaseError, Option[ConsoleExporter]] = {
     val consoleArgCount = args.count(_ == "--output-console")
 
     consoleArgCount match {

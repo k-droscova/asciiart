@@ -12,7 +12,7 @@ import UI.CommandLineParsers.SingleInputCommandLineParser
  * to parse user input and return the appropriate `Importer` instance based on the arguments.
  */
 class ImporterCommandLineParserImpl(
-                                     parsers: List[SpecializedImporterCommandLineParser] = List(
+                                     parsers: List[SpecializedImporterCommandLineParser[? <: Importer]] = List(
                                        new RandomImporterCommandLineParser(),
                                        new FileImporterCommandLineParser()
                                      )
