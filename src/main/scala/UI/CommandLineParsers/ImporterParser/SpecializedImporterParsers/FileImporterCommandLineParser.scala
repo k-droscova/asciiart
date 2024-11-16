@@ -1,13 +1,12 @@
-package UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.FileImporterParsers
+package UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers
 
 import Core.Errors.{BaseError, GeneralErrorCodes, ImageLoadingErrorCodes, LogContext}
-import Services.Importers.Importer
 import Services.Importers.FileImporters.*
+import Services.Importers.Importer
 import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.SpecializedImporterCommandLineParser
 
-import scala.util.Try
+import scala.util.{Try, boundary}
 import scala.util.boundary.break
-import scala.util.boundary
 
 class FileImporterCommandLineParser(
                                      val importers: List[String => FileImporter] = List(

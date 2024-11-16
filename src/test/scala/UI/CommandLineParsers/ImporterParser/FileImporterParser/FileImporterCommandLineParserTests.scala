@@ -3,7 +3,7 @@ package UI.CommandLineParsers.ImporterParser.FileImporterParser
 import Core.Errors.{BaseError, GeneralErrorCodes, ImageLoadingErrorCodes, LogContext}
 import Services.Importers.FileImporters.*
 import Services.Importers.Importer
-import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.FileImporterParsers.FileImporterCommandLineParser
+import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.FileImporterCommandLineParser
 import org.mockito.Mockito.*
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockedConstruction

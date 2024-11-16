@@ -2,9 +2,7 @@ package UI.CommandLineParsers.ImporterParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
 import Services.Importers.Importer
-import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.FileImporterParsers.FileImporterCommandLineParser
-import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.RandomImporterParsers.RandomImporterCommandLineParser
-import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.SpecializedImporterCommandLineParser
+import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.{FileImporterCommandLineParser, RandomImporterCommandLineParser, SpecializedImporterCommandLineParser}
 import UI.CommandLineParsers.SingleInputCommandLineParser
 
 /**

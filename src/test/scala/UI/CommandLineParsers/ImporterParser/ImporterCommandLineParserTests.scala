@@ -4,9 +4,7 @@ import Core.Errors.{BaseError, GeneralErrorCodes, ImageLoadingErrorCodes, LogCon
 import Services.Importers.FileImporters.FileImporter
 import Services.Importers.RandomImporters.RandomImporter
 import UI.CommandLineParsers.ImporterParser.ImporterCommandLineParserImpl
-import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.SpecializedImporterCommandLineParser
-import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.FileImporterParsers.FileImporterCommandLineParser
-import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.RandomImporterParsers.RandomImporterCommandLineParser
+import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.{FileImporterCommandLineParser, RandomImporterCommandLineParser, SpecializedImporterCommandLineParser}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockedConstruction
 import org.mockito.Mockito.*
