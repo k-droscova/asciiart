@@ -5,6 +5,7 @@ import Services.Importers.Importer
 import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.FileImporterParsers.FileImporterCommandLineParser
 import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.RandomImporterParsers.RandomImporterCommandLineParser
 import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.SpecializedImporterCommandLineParser
+import UI.CommandLineParsers.SingleInputCommandLineParser
 
 /**
  * Parses command line arguments related to importing images.
@@ -17,48 +18,27 @@ class ImporterCommandLineParserImpl(
                                        new RandomImporterCommandLineParser(),
                                        new FileImporterCommandLineParser()
                                      )
-                                   ) extends ImporterCommandLineParser {
+                                   ) extends SingleInputCommandLineParser[Importer](parsers) with ImporterCommandLineParser {
 
   /**
-   * Parses the input string containing command line arguments and returns the corresponding `Importer`.
-   *
-   * @param args A string array representing the command line arguments.
-   * @return An instance of `Importer` based on the parsed arguments.
-   * @throws BaseError if the input is invalid, if required arguments are missing, or if conflicting
-   *                   options are provided.
+   * Error to throw when no input is detected.
    */
-  override def parse(args: Array[String]): Importer = {
-    val results = parsers.map(_.parse(args))
-
-    val successfulParsers = results.collect { case Right(Some(importer)) => importer }
-    val errors = results.collect { case Left(error) => error }
-
-    validateParsers(successfulParsers, errors)
+  override protected def noInputError(): BaseError = {
+    BaseError(
+      message = "You must specify either --image or --image-random.",
+      context = LogContext.UI,
+      errorCode = GeneralErrorCodes.InvalidArgument
+    )
   }
 
-  private def validateParsers(successfulParsers: List[Importer], errors: List[BaseError]): Importer = {
-    val totalInputs = successfulParsers.size + errors.size
-
-    totalInputs match {
-      case 0 => // No input was provided
-        throw BaseError(
-          message = "You must specify either --image or --image-random.",
-          context = LogContext.UI,
-          errorCode = GeneralErrorCodes.InvalidArgument
-        )
-
-      case 1 => // Exactly one input was provided
-        successfulParsers.headOption match {
-          case Some(importer) => importer // Successfully parsed, return the importer
-          case None => throw errors.head // Input failed validation, propagate the error
-        }
-
-      case _ => // More than one input method detected
-        throw BaseError(
-          message = "More than one import method detected, please select one method only.",
-          context = LogContext.UI,
-          errorCode = GeneralErrorCodes.InvalidArgument
-        )
-    }
+  /**
+   * Error to throw when multiple inputs are detected.
+   */
+  override protected def multipleInputError(): BaseError = {
+    BaseError(
+      message = "More than one import method detected, please select one method only.",
+      context = LogContext.UI,
+      errorCode = GeneralErrorCodes.InvalidArgument
+    )
   }
 }
