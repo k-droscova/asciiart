@@ -1,9 +1,12 @@
-package Services.CommandLineParsers.ImporterParser
+package UI.CommandLineParsers.ImporterParser
 
-import Core.Errors.{BaseError, GeneralErrorCodes}
+import Core.Errors.{BaseError, GeneralErrorCodes, ImageLoadingErrorCodes, LogContext}
 import Services.Importers.FileImporters.FileImporter
 import Services.Importers.RandomImporters.RandomImporter
 import UI.CommandLineParsers.ImporterParser.ImporterCommandLineParserImpl
+import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.SpecializedImporterCommandLineParser
+import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.FileImporterParsers.FileImporterCommandLineParser
+import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.RandomImporterParsers.RandomImporterCommandLineParser
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockedConstruction
 import org.mockito.Mockito.*
@@ -11,92 +14,107 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.compiletime.uninitialized
+
 class ImporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
+  private val randomImporterParser: SpecializedImporterCommandLineParser = mock(classOf[RandomImporterCommandLineParser])
+  private val fileImporterParser: SpecializedImporterCommandLineParser = mock(classOf[FileImporterCommandLineParser])
+  private var parserList: List[SpecializedImporterCommandLineParser] = List(randomImporterParser, fileImporterParser)
   private var parser: ImporterCommandLineParserImpl = uninitialized
-  private var path: String = uninitialized
-  private var fileMock: MockedConstruction[FileImporter] = uninitialized
-  private var randomMock: MockedConstruction[RandomImporter] = uninitialized
+
   override def beforeEach(): Unit = {
     super.beforeEach()
-    parser = new ImporterCommandLineParserImpl()
+    parser = new ImporterCommandLineParserImpl(parserList)
   }
 
   override def afterEach(): Unit = {
     super.afterEach()
     parser = null
-    path = null
+    reset(randomImporterParser, fileImporterParser)
   }
 
-  test("Valid input with single image path") {
-    fileMock = mockConstruction(classOf[FileImporter], (mocked, context) => {
-      assert("path/to/image.jpg" == context.arguments.get(0).asInstanceOf[String])
-    })
-    val importer = parser.parse(Array("--image", "path/to/image.jpg"))
-    assert(importer.isInstanceOf[FileImporter])
-    fileMock.close()
+  test("Both parsers return None (no input provided)") {
+    when(randomImporterParser.parse(any())).thenReturn(Right(None))
+    when(fileImporterParser.parse(any())).thenReturn(Right(None))
+
+    val thrown = intercept[BaseError] {
+      parser.parse(Array.empty)
+    }
+
+    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
+    assert(thrown.message.contains("You must specify either --image or --image-random."))
+
+    verify(randomImporterParser).parse(Array.empty)
+    verify(fileImporterParser).parse(Array.empty)
   }
 
-  test("Whitespace handling") {
-    fileMock = mockConstruction(classOf[FileImporter], (mocked, context) => {
-      assert("path/to/image.jpg" == context.arguments.get(0).asInstanceOf[String])
-    })
-    val importer = parser.parse(Array("--image", "         path/to/image.jpg    "))
-    assert(importer.isInstanceOf[FileImporter])
-    fileMock.close()
-  }
+  test("First parser returns Some, second parser returns None (valid random importer)") {
+    when(randomImporterParser.parse(any())).thenReturn(Right(Some(mock(classOf[RandomImporter]))))
+    when(fileImporterParser.parse(any())).thenReturn(Right(None))
 
-  test("Valid input with random image flag") {
-    randomMock = mockConstruction(classOf[RandomImporter], (mocked, context) => {})
     val importer = parser.parse(Array("--image-random"))
     assert(importer.isInstanceOf[RandomImporter])
-    randomMock.close()
+
+    verify(randomImporterParser).parse(Array("--image-random"))
+    verify(fileImporterParser).parse(Array("--image-random"))
   }
 
-  test("Mixed input with both image and random") {
+  test("First parser returns None, second parser returns Some (valid file importer)") {
+    when(randomImporterParser.parse(any())).thenReturn(Right(None))
+    when(fileImporterParser.parse(any())).thenReturn(Right(Some(mock(classOf[FileImporter]))))
+
+    val importer = parser.parse(Array("--image", "path/to/image.jpg"))
+    assert(importer.isInstanceOf[FileImporter])
+
+    verify(randomImporterParser).parse(Array("--image", "path/to/image.jpg"))
+    verify(fileImporterParser).parse(Array("--image", "path/to/image.jpg"))
+  }
+
+  test("Both parsers return Some (conflicting inputs)") {
+    when(randomImporterParser.parse(any())).thenReturn(Right(Some(mock(classOf[RandomImporter]))))
+    when(fileImporterParser.parse(any())).thenReturn(Right(Some(mock(classOf[FileImporter]))))
+
     val thrown = intercept[BaseError] {
       parser.parse(Array("--image", "path/to/image.jpg", "--image-random"))
     }
+
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Cannot specify both --image and --image-random."))
+    assert(thrown.message.contains("More than one import method detected, please select one method only."))
   }
 
-  test("Multiple --image arguments") {
+  test("Both parsers return errors, propagates the first error") {
+    when(randomImporterParser.parse(any())).thenReturn(Left(BaseError("random error", LogContext.UI, GeneralErrorCodes.InvalidArgument)))
+    when(fileImporterParser.parse(any())).thenReturn(Left(BaseError("other random error", LogContext.UI, ImageLoadingErrorCodes.FileNotFound)))
+
     val thrown = intercept[BaseError] {
-      parser.parse(Array("--image", "path/to/image1.jpg", "--image", "path/to/image2.jpg"))
+      parser.parse(Array.empty)
     }
+
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Only one --image argument is allowed."))
+    assert(thrown.message.contains("More than one import method detected, please select one method only."))
   }
 
-  test("No arguments") {
+  test("First parser returns Some, second parser returns error (valid random importer)") {
+    when(randomImporterParser.parse(any())).thenReturn(Right(Some(mock(classOf[RandomImporter]))))
+    when(fileImporterParser.parse(any())).thenReturn(Left(BaseError("Invalid file format", LogContext.UI, ImageLoadingErrorCodes.UnsupportedFormat)))
+
     val thrown = intercept[BaseError] {
-      parser.parse(Array())
+      parser.parse(Array.empty)
     }
+
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("You must specify either --image or --image-random."))
+    assert(thrown.message.contains("More than one import method detected, please select one method only."))
   }
 
-  test("Invalid flag") {
-    val thrown = intercept[BaseError] {
-      parser.parse(Array("--invalidFlag"))
-    }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("You must specify either --image or --image-random."))
-  }
+  // CASE 6: One parser returns Left, the other returns Some
+  test("First parser returns error, second parser returns Some (valid file importer)") {
+    when(randomImporterParser.parse(any())).thenReturn(Left(BaseError("Invalid random input", LogContext.UI, GeneralErrorCodes.InvalidArgument)))
+    when(fileImporterParser.parse(any())).thenReturn(Right(Some(mock(classOf[FileImporter]))))
 
-  test("Only --image without path") {
     val thrown = intercept[BaseError] {
-      parser.parse(Array("--image"))
+      parser.parse(Array.empty)
     }
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Image filepath was not specified after --image argument."))
-  }
 
-  test("Multiple arguments with both --image and --image-random") {
-    val thrown = intercept[BaseError] {
-      parser.parse(Array("--rotate", "+90", "--image-random", "--scale", "0.5", "--invert", "--image", "path/to/image.jpg"))
-    }
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Cannot specify both --image and --image-random."))
+    assert(thrown.message.contains("More than one import method detected, please select one method only."))
   }
 }

@@ -3,13 +3,12 @@ package UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers
 import Core.Errors.BaseError
 import Services.Importers.Importer
 import UI.CommandLineParsers.CommandLineParser
-trait SpecializedImporterCommandLineParser {
-  /**
-   * Attempts to parse the input arguments and return an `Either` representing
-   * a successful `Importer` or a `BaseError` for validation failure.
-   *
-   * @param args The command line arguments to parse.
-   * @return Either a `BaseError` (Left) or an `Option[Importer]` (Right).
-   */
-  def parse(args: Array[String]): Either[BaseError, Option[Importer]]
-}
+import UI.CommandLineParsers.SpecializedCommandLineParser
+
+/**
+ * A trait defining a parser for specialized command line arguments related to importing images.
+ *
+ * The parser is responsible for detecting its specific argument(s) in the input, validating them,
+ * and returning the appropriate result.
+ */
+trait SpecializedImporterCommandLineParser extends SpecializedCommandLineParser[Importer]

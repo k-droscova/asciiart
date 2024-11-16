@@ -16,7 +16,7 @@ class RandomImporterCommandLineParserTests extends AnyFunSuite {
 
     assert(result.isRight)
     result match {
-      case Right(Some(importer: RandomImporter)) => succeed // Confirm it returns a RandomImporter
+      case Right(Some(importer: RandomImporter)) => succeed
       case _ => fail("Expected Right(Some(RandomImporter)) but got something else.")
     }
   }
@@ -27,7 +27,7 @@ class RandomImporterCommandLineParserTests extends AnyFunSuite {
 
     assert(result.isRight)
     result match {
-      case Right(None) => succeed // Confirm it returns None
+      case Right(None) => succeed
       case _ => fail("Expected Right(None) but got something else.")
     }
   }
@@ -38,7 +38,7 @@ class RandomImporterCommandLineParserTests extends AnyFunSuite {
 
     assert(result.isRight)
     result match {
-      case Right(None) => succeed // Confirm it returns None
+      case Right(None) => succeed
       case _ => fail("Expected Right(None) but got something else.")
     }
   }
@@ -49,7 +49,7 @@ class RandomImporterCommandLineParserTests extends AnyFunSuite {
 
     assert(result.isRight)
     result match {
-      case Right(None) => succeed // Confirm it returns None
+      case Right(None) => succeed
       case _ => fail("Expected Right(None) but got something else.")
     }
   }
