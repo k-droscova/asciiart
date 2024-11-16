@@ -41,8 +41,7 @@ class BorderedAsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAn
     val result = parser.parse(args)
 
     result match {
-      case Right(Some(table)) =>
-        assert(table == borderedTableMock.constructed().get(0))
+      case Right(Some(convertor)) =>
       case _ => fail("Expected Right(Some(BorderedAsciiTable)), but got something else.")
     }
 

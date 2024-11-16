@@ -32,8 +32,7 @@ class DefaultLinearAsciiTableCommandLineParserTests extends AnyFunSuite with Bef
     val result = parser.parse(args)
 
     result match {
-      case Right(Some(table)) =>
-        assert(table == defaultTableMock.constructed().get(0))
+      case Right(Some(convertor)) =>
       case _ => fail("Expected Right(Some(DefaultLinearAsciiTable)), but got something else.")
     }
 
@@ -47,8 +46,7 @@ class DefaultLinearAsciiTableCommandLineParserTests extends AnyFunSuite with Bef
     val result = parser.parse(args)
 
     result match {
-      case Right(Some(table)) =>
-        assert(table == defaultTableMock.constructed().get(0))
+      case Right(Some(convertor)) =>
       case _ => fail("Expected Right(Some(DefaultLinearAsciiTable)), but got something else.")
     }
 

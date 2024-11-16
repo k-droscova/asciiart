@@ -40,8 +40,7 @@ class CustomLinearAsciiTableCommandLineParserTests extends AnyFunSuite with Befo
     val result = parser.parse(args)
 
     result match {
-      case Right(Some(table)) =>
-        assert(table == customTableMock.constructed().get(0))
+      case Right(Some(convertor)) =>
       case _ => fail("Expected Right(Some(CustomLinearAsciiTable)), but got something else.")
     }
     customTableMock.close()

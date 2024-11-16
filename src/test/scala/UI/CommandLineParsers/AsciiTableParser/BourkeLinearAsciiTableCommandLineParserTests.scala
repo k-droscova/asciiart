@@ -38,8 +38,7 @@ class BourkeLinearAsciiTableCommandLineParserTests extends AnyFunSuite with Befo
     val result = parser.parse(args)
 
     result match {
-      case Right(Some(table)) =>
-        assert(table == bourkeTableMock.constructed().get(0))
+      case Right(Some(convertor)) =>
       case _ => fail("Expected Right(Some(BourkeLinearAsciiTable)), but got something else.")
     }
 

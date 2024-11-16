@@ -2,9 +2,10 @@ package UI.CommandLineParsers.AsciiTableParser.SpecializedAsciiParsers
 
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
 import Core.Models.AsciiTable.Linear.CustomLinearAsciiTable
+import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
 
-class CustomLinearAsciiTableCommandLineParser extends SpecializedAsciiTableCommandLineParser[CustomLinearAsciiTable] {
-  override def parse(args: Array[String]): Either[BaseError, Option[CustomLinearAsciiTable]] = {
+class CustomLinearAsciiTableCommandLineParser extends SpecializedAsciiTableCommandLineParser {
+  override def parse(args: Array[String]): Either[BaseError, Option[AsciiConvertor]] = {
     val customIndices = args.zipWithIndex.collect { case ("--custom-table", index) => index }
 
     customIndices.length match {
@@ -23,7 +24,7 @@ class CustomLinearAsciiTableCommandLineParser extends SpecializedAsciiTableComma
         } else {
           // Valid argument follows, create the table
           val chars = args(customIndex + 1).trim
-          Right(Some(new CustomLinearAsciiTable(chars)))
+          Right(Some(new AsciiConvertor(new CustomLinearAsciiTable(chars))))
         }
       case _ =>
         // More than one `--custom-table` argument

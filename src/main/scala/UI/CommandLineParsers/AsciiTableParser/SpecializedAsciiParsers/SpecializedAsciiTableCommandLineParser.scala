@@ -1,5 +1,6 @@
 package UI.CommandLineParsers.AsciiTableParser.SpecializedAsciiParsers
 
 import Core.Models.AsciiTable.AsciiTable
+import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
 import UI.CommandLineParsers.SpecializedCommandLineParser
-trait SpecializedAsciiTableCommandLineParser[T <: AsciiTable] extends SpecializedCommandLineParser[T] {}
+trait SpecializedAsciiTableCommandLineParser extends SpecializedCommandLineParser[AsciiConvertor]

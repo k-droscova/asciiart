@@ -2,10 +2,11 @@ package UI.CommandLineParsers.AsciiTableParser.SpecializedAsciiParsers
 
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
 import Core.Models.AsciiTable.Nonlinear.BorderedAsciiTable
+import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
 
-class BorderedAsciiTableCommandLineParser extends SpecializedAsciiTableCommandLineParser[BorderedAsciiTable] {
+class BorderedAsciiTableCommandLineParser extends SpecializedAsciiTableCommandLineParser {
 
-  override def parse(args: Array[String]): Either[BaseError, Option[BorderedAsciiTable]] = {
+  override def parse(args: Array[String]): Either[BaseError, Option[AsciiConvertor]] = {
     val borderedArgs = args.zipWithIndex.filter(_._1.startsWith("--table=bordered"))
 
     borderedArgs match {
@@ -21,7 +22,7 @@ class BorderedAsciiTableCommandLineParser extends SpecializedAsciiTableCommandLi
     }
   }
 
-  private def parseBorderedTable(args: Array[String], index: Int): Either[BaseError, Option[BorderedAsciiTable]] = {
+  private def parseBorderedTable(args: Array[String], index: Int): Either[BaseError, Option[AsciiConvertor]] = {
     // Ensure there are characters after `--table=bordered`
     if (index + 1 >= args.length || args(index + 1).startsWith("--")) {
       return Left(BaseError(
@@ -47,6 +48,6 @@ class BorderedAsciiTableCommandLineParser extends SpecializedAsciiTableCommandLi
       value.stripPrefix("+").toIntOption
     }
 
-    Right(Some(new BorderedAsciiTable(characters, borders)))
+    Right(Some(new AsciiConvertor(new BorderedAsciiTable(characters, borders))))
   }
 }
