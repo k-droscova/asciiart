@@ -14,23 +14,19 @@ import scala.compiletime.uninitialized
 class JPEGFileImporterTests extends AnyFunSuite with BeforeAndAfterEach {
   private var validJpgFile: File = uninitialized
   private var nonExistentFile: File = uninitialized
-  private var notAFile: File = uninitialized
   private var unsupportedFile: File = uninitialized
   private val tempDir = System.getProperty("java.io.tmpdir")
 
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    validJpgFile = new File(tempDir, "testImage.jpg")
+    validJpgFile = new File(tempDir, "JPEGFileImporterTests_validImage.jpg")
     val jpgImage = new BufferedImage(200, 100, BufferedImage.TYPE_INT_RGB)
     ImageIO.write(jpgImage, "jpg", validJpgFile)
 
-    nonExistentFile = new File(tempDir, "nonExistentFile.jpg")
+    nonExistentFile = new File(tempDir, "JPEGFileImporterTests_nonExistentFile.jpg")
 
-    notAFile = new File(tempDir, "notAFileDir")
-    notAFile.mkdir()
-
-    unsupportedFile = new File(tempDir, "unsupportedFile.png")
+    unsupportedFile = new File(tempDir, "JPEGFileImporterTests_unsupportedImage.png")
     val unsupportedImage = new BufferedImage(200, 100, BufferedImage.TYPE_INT_RGB)
     ImageIO.write(unsupportedImage, "png", unsupportedFile)
   }
@@ -39,7 +35,6 @@ class JPEGFileImporterTests extends AnyFunSuite with BeforeAndAfterEach {
     super.afterEach()
     validJpgFile.delete()
     unsupportedFile.delete()
-    if (notAFile.exists()) notAFile.delete()
   }
 
   test("JPEGFileImporter should throw BaseError if the file doesn't exist") {
@@ -51,7 +46,7 @@ class JPEGFileImporterTests extends AnyFunSuite with BeforeAndAfterEach {
 
   test("JPEGFileImporter should throw BaseError if the path is not a file") {
     val thrown = intercept[BaseError] {
-      new JPEGFileImporter(notAFile.getPath)
+      new JPEGFileImporter(tempDir)
     }
     assert(thrown.errorCode == ImageLoadingErrorCodes.FileUnreadable)
   }

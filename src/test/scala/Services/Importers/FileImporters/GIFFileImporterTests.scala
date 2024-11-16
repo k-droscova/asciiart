@@ -14,23 +14,19 @@ import scala.compiletime.uninitialized
 class GIFFileImporterTests extends AnyFunSuite with BeforeAndAfterEach {
   private var validGifFile: File = uninitialized
   private var nonExistentFile: File = uninitialized
-  private var notAFile: File = uninitialized
   private var unsupportedFile: File = uninitialized
   private val tempDir = System.getProperty("java.io.tmpdir")
 
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    validGifFile = new File(tempDir, "testImage.gif")
+    validGifFile = new File(tempDir, "GIFFileImporterTests_validImage.gif")
     val gifImage = new BufferedImage(200, 100, BufferedImage.TYPE_INT_RGB)
     ImageIO.write(gifImage, "gif", validGifFile)
 
-    nonExistentFile = new File(tempDir, "nonExistentFile.gif")
+    nonExistentFile = new File(tempDir, "GIFFileImporterTests_nonExistentFile.gif")
 
-    notAFile = new File(tempDir, "notAFileDir")
-    notAFile.mkdir()
-
-    unsupportedFile = new File(tempDir, "unsupportedFile.jpg")
+    unsupportedFile = new File(tempDir, "GIFFileImporterTests_unsupportedImage.jpg")
     val unsupportedImage = new BufferedImage(200, 100, BufferedImage.TYPE_INT_RGB)
     ImageIO.write(unsupportedImage, "jpg", unsupportedFile)
   }
@@ -39,7 +35,6 @@ class GIFFileImporterTests extends AnyFunSuite with BeforeAndAfterEach {
     super.afterEach()
     validGifFile.delete()
     unsupportedFile.delete()
-    if (notAFile.exists()) notAFile.delete()
   }
 
   test("GIFFileImporter should throw BaseError if the file doesn't exist") {
@@ -51,7 +46,7 @@ class GIFFileImporterTests extends AnyFunSuite with BeforeAndAfterEach {
 
   test("GIFFileImporter should throw BaseError if the path is not a file") {
     val thrown = intercept[BaseError] {
-      new GIFFileImporter(notAFile.getPath)
+      new GIFFileImporter(tempDir)
     }
     assert(thrown.errorCode == ImageLoadingErrorCodes.FileUnreadable)
   }
