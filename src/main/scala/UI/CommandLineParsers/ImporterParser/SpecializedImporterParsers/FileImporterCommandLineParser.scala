@@ -54,20 +54,15 @@ class FileImporterCommandLineParser(
     boundary[Option[Either[BaseError, Option[FileImporter]]]]:
       for (importerFactory <- importers) {
         try {
-          println("constructing " + importerFactory.toString())
           val importer = importerFactory(filePath) // Attempt to create importer
           break(Some(Right(Some(importer)))) // Success, exit immediately
         } catch {
           case e: BaseError if shouldExitEarly(e) =>
             break(Some(Left(e))) // Exit early for specific errors
-          case t: Throwable =>
-            break(Some(Left(BaseError(
-              message = s"Unexpected error: ${t.getMessage}",
-              context = LogContext.System,
-              errorCode = GeneralErrorCodes.UnknownError
-            ))))
+          case e: BaseError =>
         }
       }
+      println("No suitable importer found.")
       None // If no importer succeeds, return None
   }
   private def shouldExitEarly(error: BaseError): Boolean = {
