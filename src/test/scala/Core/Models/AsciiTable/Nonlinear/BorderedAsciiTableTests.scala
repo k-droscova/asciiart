@@ -1,6 +1,6 @@
 package Core.Models.AsciiTable.Nonlinear
 
-import Core.Errors.{ASCIIConversionErrorCodes, BaseError, LogContext}
+import Core.Errors.{ASCIIConversionErrorCodes, BaseError}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 

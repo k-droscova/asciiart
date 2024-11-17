@@ -1,6 +1,6 @@
 package UI.CommandLineParsers
 
-import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
+import Core.Errors.BaseError
 
 abstract class SingleInputCommandLineParser[T](
                                                 private val parsers: List[SpecializedCommandLineParser[? <: T]]

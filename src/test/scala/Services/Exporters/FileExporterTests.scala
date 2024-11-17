@@ -12,6 +12,7 @@ import java.io.{File, PrintWriter}
 import java.nio.file.{Files, Path}
 import scala.compiletime.uninitialized
 import scala.util.Using
+
 class FileExporterTests extends AnyFunSuite with BeforeAndAfterEach {
   private var exporter: FileExporter = uninitialized
   private var image: AsciiImage = uninitialized

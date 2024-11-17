@@ -5,8 +5,8 @@ import Services.Importers.FileImporters.*
 import Services.Importers.Importer
 import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.SpecializedImporterCommandLineParser
 
-import scala.util.{Try, boundary}
 import scala.util.boundary.break
+import scala.util.{Try, boundary}
 
 class FileImporterCommandLineParser(
                                      val importers: List[String => FileImporter] = List(

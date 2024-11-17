@@ -1,7 +1,6 @@
 package UI.CommandLineParsers.ImporterParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes}
-import Services.Importers.Importer
 import Services.Importers.RandomImporters.RandomImporter
 import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.RandomImporterCommandLineParser
 import org.scalatest.funsuite.AnyFunSuite

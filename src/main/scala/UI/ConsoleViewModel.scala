@@ -5,10 +5,10 @@ import Services.Exporters.Exporter
 import Services.Filters.Filter
 import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
 import Services.Importers.Importer
-import UI.CommandLineParsers.AsciiTableParser.{AsciiTableCommandLineParserImpl, AsciiTableCommandLineParser}
-import UI.CommandLineParsers.ExporterParser.{ExporterCommandLineParserImpl, ExporterCommandLineParser}
-import UI.CommandLineParsers.FilterParser.{FilterCommandLineParserImpl, FilterCommandLineParser}
-import UI.CommandLineParsers.ImporterParser.{ImporterCommandLineParserImpl, ImporterCommandLineParser}
+import UI.CommandLineParsers.AsciiTableParser.{AsciiTableCommandLineParser, AsciiTableCommandLineParserImpl}
+import UI.CommandLineParsers.ExporterParser.{ExporterCommandLineParser, ExporterCommandLineParserImpl}
+import UI.CommandLineParsers.FilterParser.{FilterCommandLineParser, FilterCommandLineParserImpl}
+import UI.CommandLineParsers.ImporterParser.{ImporterCommandLineParser, ImporterCommandLineParserImpl}
 
 class ConsoleViewModel(
                         private val asciiTableParser: AsciiTableCommandLineParser = new AsciiTableCommandLineParserImpl,

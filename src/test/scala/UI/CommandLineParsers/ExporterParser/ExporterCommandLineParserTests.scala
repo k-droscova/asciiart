@@ -2,10 +2,9 @@ package UI.CommandLineParsers.ExporterParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
 import Services.Exporters.{ConsoleExporter, Exporter, FileExporter}
-import UI.CommandLineParsers.ExporterParser.ExporterCommandLineParserImpl
 import UI.CommandLineParsers.ExporterParser.SpecializedExporterParsers.*
-import org.mockito.Mockito.*
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 

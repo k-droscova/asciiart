@@ -1,14 +1,12 @@
 package UI.CommandLineParsers.ExporterParser
 
-import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
-import Services.Exporters.{Exporter, FileExporter}
-import Services.Importers.FileImporters.PNGFileImporter
+import Core.Errors.{BaseError, GeneralErrorCodes}
+import Services.Exporters.FileExporter
 import UI.CommandLineParsers.ExporterParser.SpecializedExporterParsers.FileExporterCommandLineParser
 import org.mockito.Mockito.*
-import org.mockito.Mockito
-import org.mockito.MockedConstruction
-import org.scalatest.funsuite.AnyFunSuite
+import org.mockito.{MockedConstruction, Mockito}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.compiletime.uninitialized
 class FileExporterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {

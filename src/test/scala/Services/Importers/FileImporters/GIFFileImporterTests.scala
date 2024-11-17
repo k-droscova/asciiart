@@ -1,8 +1,6 @@
 package Services.Importers.FileImporters
 
 import Core.Errors.{BaseError, ImageLoadingErrorCodes}
-import Core.Models.Image.RGBImage
-import Services.Importers.FileImporters.GIFFileImporter
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 

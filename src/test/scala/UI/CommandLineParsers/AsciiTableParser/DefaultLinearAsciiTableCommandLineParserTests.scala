@@ -1,12 +1,12 @@
 package UI.CommandLineParsers.AsciiTableParser
 
-import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
+import Core.Errors.{BaseError, GeneralErrorCodes}
 import Core.Models.AsciiTable.Linear.DefaultLinearAsciiTable
 import UI.CommandLineParsers.AsciiTableParser.SpecializedAsciiParsers.DefaultLinearAsciiTableCommandLineParser
 import org.mockito.MockedConstruction
 import org.mockito.Mockito.*
-import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.compiletime.uninitialized
 

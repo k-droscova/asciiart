@@ -1,12 +1,12 @@
 package UI.CommandLineParsers.ExporterParser
 
-import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
-import Services.Exporters.{ConsoleExporter, Exporter}
+import Core.Errors.{BaseError, GeneralErrorCodes}
+import Services.Exporters.ConsoleExporter
 import UI.CommandLineParsers.ExporterParser.SpecializedExporterParsers.ConsoleExporterCommandLineParser
 import org.mockito.MockedConstruction
 import org.mockito.Mockito.*
-import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.compiletime.uninitialized
 

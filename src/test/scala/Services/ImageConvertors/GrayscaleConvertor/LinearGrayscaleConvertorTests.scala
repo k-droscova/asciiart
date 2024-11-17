@@ -1,8 +1,7 @@
 package Services.ImageConvertors.GrayscaleConvertor
 
-import Core.Models.Image.{GrayscaleImage, RGBImage}
-import Core.Models.Pixel.{GrayscalePixel, RGBPixel}
-import Services.ImageConvertors.GrayscaleConvertor.LinearGrayscaleConvertor
+import Core.Models.Image.RGBImage
+import Core.Models.Pixel.RGBPixel
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 

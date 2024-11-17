@@ -7,8 +7,7 @@ import Services.Filters.Filter
 import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
 import Services.ImageConvertors.GrayscaleConvertor.LinearGrayscaleConvertor
 import Services.Importers.Importer
-import org.mockito.Mockito._
-import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 

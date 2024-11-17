@@ -1,11 +1,9 @@
 package Core.Models.Image
 
 import Core.Errors.{BaseError, GeneralErrorCodes}
-import Core.Models.Image.AsciiImage
 import Core.Models.Pixel.AsciiPixel
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
-import sourcecode.*
 
 import scala.compiletime.uninitialized
 

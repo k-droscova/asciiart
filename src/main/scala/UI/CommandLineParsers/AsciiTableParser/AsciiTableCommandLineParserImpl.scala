@@ -1,11 +1,10 @@
 package UI.CommandLineParsers.AsciiTableParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
-import Core.Models.AsciiTable.Linear.{BourkeLinearAsciiTable, CustomLinearAsciiTable, DefaultLinearAsciiTable}
-import Core.Models.AsciiTable.AsciiTable
 import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
-import UI.CommandLineParsers.SingleInputCommandLineParser
 import UI.CommandLineParsers.AsciiTableParser.SpecializedAsciiParsers.*
+import UI.CommandLineParsers.SingleInputCommandLineParser
+
 class AsciiTableCommandLineParserImpl(
                                        parsers: List[SpecializedAsciiTableCommandLineParser] = List(
                                          new CustomLinearAsciiTableCommandLineParser(),

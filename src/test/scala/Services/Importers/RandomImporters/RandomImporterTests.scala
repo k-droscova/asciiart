@@ -1,12 +1,10 @@
 package Services.Importers.RandomImporters
 
 import Core.Errors.{BaseError, ImageLoadingErrorCodes}
-import Core.Models.Image.RGBImage
-import Services.Importers.RandomImporters.RandomImporter
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
-import org.mockito.ArgumentMatchers._
 
 import scala.compiletime.uninitialized
 import scala.util.Random

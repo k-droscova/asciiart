@@ -1,10 +1,8 @@
 package UI.CommandLineParsers.ImporterParser
 
-import Core.Errors.{BaseError, GeneralErrorCodes, ImageLoadingErrorCodes, LogContext}
+import Core.Errors.{BaseError, GeneralErrorCodes}
 import Services.Importers.FileImporters.*
-import Services.Importers.Importer
 import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.FileImporterCommandLineParser
-import org.mockito.ArgumentMatchers.any
 import org.mockito.MockedConstruction
 import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach

@@ -1,6 +1,6 @@
 package Services.Filters
 
-import Core.Errors.{BaseError, FilterErrorCodes, GeneralErrorCodes}
+import Core.Errors.{BaseError, FilterErrorCodes}
 import Core.Models.Image.GrayscaleImage
 import Core.Models.Pixel.GrayscalePixel
 import org.scalatest.BeforeAndAfterEach

@@ -1,7 +1,7 @@
 package UI.CommandLineParsers.ExporterParser.SpecializedExporterParsers
 
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
-import Services.Exporters.{FileExporter, Exporter}
+import Services.Exporters.{Exporter, FileExporter}
 
 /**
  * Specialized parser for the `--output-file` argument.

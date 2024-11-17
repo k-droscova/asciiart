@@ -1,7 +1,6 @@
 package UI
 
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
-import UI.ConsoleViewModel
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockedConstruction
 import org.mockito.Mockito.*

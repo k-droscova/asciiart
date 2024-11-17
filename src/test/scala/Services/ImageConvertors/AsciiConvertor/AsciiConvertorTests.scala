@@ -1,11 +1,10 @@
 package Services.ImageConvertors.AsciiConvertor
 
 import Core.Models.AsciiTable.AsciiTable
-import Core.Models.Image.{AsciiImage, GrayscaleImage}
-import Core.Models.Pixel.{AsciiPixel, GrayscalePixel}
-import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
-import org.mockito.Mockito.*
+import Core.Models.Image.GrayscaleImage
+import Core.Models.Pixel.GrayscalePixel
 import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 

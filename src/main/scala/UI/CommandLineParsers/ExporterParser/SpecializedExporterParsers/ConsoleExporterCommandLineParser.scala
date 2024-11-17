@@ -1,8 +1,7 @@
 package UI.CommandLineParsers.ExporterParser.SpecializedExporterParsers
 
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
-import Services.Exporters.ConsoleExporter
-import Services.Exporters.Exporter
+import Services.Exporters.{ConsoleExporter, Exporter}
 
 /**
  * Specialized parser for the `--output-console` argument.

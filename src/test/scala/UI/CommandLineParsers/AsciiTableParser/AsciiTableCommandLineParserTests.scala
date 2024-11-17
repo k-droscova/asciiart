@@ -2,8 +2,7 @@ package UI.CommandLineParsers.AsciiTableParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
 import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
-import UI.CommandLineParsers.AsciiTableParser.AsciiTableCommandLineParserImpl
-import UI.CommandLineParsers.AsciiTableParser.SpecializedAsciiParsers.{CustomLinearAsciiTableCommandLineParser, DefaultLinearAsciiTableCommandLineParser, BourkeLinearAsciiTableCommandLineParser, BorderedAsciiTableCommandLineParser}
+import UI.CommandLineParsers.AsciiTableParser.SpecializedAsciiParsers.{BorderedAsciiTableCommandLineParser, BourkeLinearAsciiTableCommandLineParser, CustomLinearAsciiTableCommandLineParser, DefaultLinearAsciiTableCommandLineParser}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
