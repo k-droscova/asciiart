@@ -80,7 +80,6 @@ class FileImporterCommandLineParser(
   }
 
   private def constructImportersOneByOne(importers: List[String => FileImporter], filePath: String): Option[Either[BaseError, Option[FileImporter]]] = {
-    println("constructing one by one")
     boundary[Option[Either[BaseError, Option[FileImporter]]]]:
       for (importerFactory <- importers) {
         try {
@@ -92,11 +91,9 @@ class FileImporterCommandLineParser(
           case e: BaseError =>
         }
       }
-      println("No suitable importer found.")
       None // If no importer succeeds, return None
   }
   private def shouldExitEarly(error: BaseError): Boolean = {
-    println("checking for early exit for " + error.errorCode)
     error.errorCode match {
       case ImageLoadingErrorCodes.FileNotFound | ImageLoadingErrorCodes.FileUnreadable => true
       case _ => false
