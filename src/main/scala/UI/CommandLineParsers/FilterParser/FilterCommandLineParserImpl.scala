@@ -39,9 +39,9 @@ class FilterCommandLineParserImpl(
   override def parse(args: Array[String]): List[Filter] = {
     parsers.flatMap { parser =>
       parser.parse(args) match {
+        case Left(error)          => throw error // Throw the error if parsing fails
         case Right(Some(filters)) => filters.toList // Return the list of filters from the parser
         case Right(None)          => List.empty // Return an empty list if the parser doesn't find filters
-        case Left(error)          => throw error // Throw the error if parsing fails
       }
     }
   }

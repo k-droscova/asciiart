@@ -27,31 +27,38 @@ import Services.Filters.BrightnessFilter
  */
 class BrightnessFilterCommandLineParser extends SpecializedFilterCommandLineParser[BrightnessFilter] {
   override def parse(args: Array[String]): Either[BaseError, Option[List[BrightnessFilter]]] = {
-    val brightnessArgs = args.sliding(2).filter(_.head == "--brightness").toList
+    // Collect indices of `--brightness`
+    val brightnessIndices = args.zipWithIndex.collect {
+      case ("--brightness", index) => index
+    }
 
-    if (brightnessArgs.isEmpty) {
+    if (brightnessIndices.isEmpty) {
       return Right(None) // No brightness arguments found
     }
 
-    val filters = brightnessArgs.map {
-      case Array("--brightness", value) =>
-        value.stripPrefix("+").toIntOption match {
-          case Some(b) => new BrightnessFilter(b)
-          case None =>
-            throw BaseError(
-              message = "Invalid brightness argument, expected pattern: (+-)Num where Num is integer.",
-              context = LogContext.UI,
-              errorCode = GeneralErrorCodes.InvalidArgument
-            )
-        }
-      case _ =>
+    val filters = brightnessIndices.map { index =>
+      // Ensure there is a value after `--brightness`
+      if (index + 1 >= args.length || args(index + 1).startsWith("--")) {
         throw BaseError(
           message = "Brightness value must be specified after --brightness.",
           context = LogContext.UI,
           errorCode = GeneralErrorCodes.InvalidArgument
         )
+      }
+
+      // Validate and parse the brightness value
+      val value = args(index + 1)
+      value.stripPrefix("+").toIntOption match {
+        case Some(b) => new BrightnessFilter(b)
+        case None =>
+          throw BaseError(
+            message = "Invalid brightness argument, expected pattern: (+-)Num where Num is integer.",
+            context = LogContext.UI,
+            errorCode = GeneralErrorCodes.InvalidArgument
+          )
+      }
     }
 
-    Right(Some(filters))
+    Right(Some(filters.toList))
   }
 }

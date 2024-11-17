@@ -27,32 +27,44 @@ import Services.Filters.RotateFilter
  */
 class RotateFilterCommandLineParser extends SpecializedFilterCommandLineParser[RotateFilter] {
   override def parse(args: Array[String]): Either[BaseError, Option[List[RotateFilter]]] = {
-    val rotateArgs = args.sliding(2).filter(_.head == "--rotate").toList
+    // Collect indices of `--rotate`
+    val rotateIndices = args.zipWithIndex.collect {
+      case ("--rotate", index) => index
+    }
 
-    if (rotateArgs.isEmpty) {
+    if (rotateIndices.isEmpty) {
       return Right(None) // No rotation arguments found
     }
 
-    val filters = rotateArgs.map {
-      case Array("--rotate", value) =>
-        value.stripPrefix("+").toIntOption match {
-          case Some(angle) =>
-            new RotateFilter(angle)
-          case _ =>
-            throw BaseError(
-              message = s"Invalid rotation argument, expected pattern: (+-)Num where Num is integer dividable by 90",
-              context = LogContext.UI,
-              errorCode = GeneralErrorCodes.InvalidArgument
-            )
-        }
-      case _ =>
+    val filters = rotateIndices.map { index =>
+      // Ensure there is a value after `--rotate`
+      if (index + 1 >= args.length || args(index + 1).startsWith("--")) {
         throw BaseError(
           message = "Rotation value must be specified after --rotate.",
           context = LogContext.UI,
           errorCode = GeneralErrorCodes.InvalidArgument
         )
+      }
+
+      // Validate and parse the rotation value
+      val value = args(index + 1)
+      value.stripPrefix("+").toIntOption match {
+        case Some(angle) if angle % 90 == 0 => new RotateFilter(angle)
+        case Some(angle) =>
+          throw BaseError(
+            message = s"Angle $angle is invalid. Angle must be a multiple of 90 degrees.",
+            context = LogContext.UI,
+            errorCode = FilterErrorCodes.InvalidRotationAngle
+          )
+        case None =>
+          throw BaseError(
+            message = s"Invalid rotation argument, expected pattern: (+-)Num where Num is integer dividable by 90.",
+            context = LogContext.UI,
+            errorCode = GeneralErrorCodes.InvalidArgument
+          )
+      }
     }
 
-    Right(Some(filters))
+    Right(Some(filters.toList))
   }
 }
