@@ -11,6 +11,13 @@ import javax.imageio.stream.ImageInputStream
 import javax.imageio.{ImageIO, ImageReader}
 import scala.util.Try
 
+/**
+ * Abstract class for importing image files. Handles common validation and loading logic,
+ * leaving format-specific validation to subclasses.
+ *
+ * @param path The path to the file to be imported.
+ * @throws BaseError If the file does not exist, is not a valid file, or is unreadable.
+ */
 abstract class FileImporter(path: String) extends Importer {
   private val file = new File(path)
 
@@ -44,7 +51,7 @@ abstract class FileImporter(path: String) extends Importer {
    * @param file The image file.
    * @return The format name of the image in lowercase.
    */
-  protected def getFormatName(file: File): String = {
+  private def getFormatName(file: File): String = {
     val inputStream: ImageInputStream = ImageIO.createImageInputStream(file)
     try {
       val readers = ImageIO.getImageReaders(inputStream)
@@ -58,11 +65,6 @@ abstract class FileImporter(path: String) extends Importer {
       inputStream.close()
     }
   }
-
-  /**
-   * Protected accessor for the validated file.
-   */
-  protected def getFile: File = file
 
   override def importImage(): RGBImage = {
     val bufferedImage = Try(ImageIO.read(file)) match {

@@ -1,6 +1,5 @@
 package UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers
 
-import Core.Errors.BaseError
 import Services.Importers.Importer
 import UI.CommandLineParsers.SpecializedCommandLineParser
 

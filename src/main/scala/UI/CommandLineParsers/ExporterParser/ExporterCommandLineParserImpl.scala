@@ -6,10 +6,19 @@ import UI.CommandLineParsers.ExporterParser.SpecializedExporterParsers.{ConsoleE
 import UI.CommandLineParsers.SingleInputCommandLineParser
 
 /**
- * Parses command line arguments related to exporting ASCII art.
+ * Implementation of `ExporterCommandLineParser` that supports multiple export methods.
  *
- * This class implements the `ExporterCommandLineParser` trait and uses specialized parsers
- * to handle different export options (`--output-file` and `--output-console`).
+ * The `ExporterCommandLineParserImpl` delegates the parsing logic to a list of specialized parsers,
+ * each responsible for detecting and validating a specific export method. It ensures that exactly one
+ * export method is selected and provides meaningful errors for invalid or conflicting inputs.
+ *
+ * Supported Export Methods:
+ * - `--output-file <path>`: Exports the ASCII art to the specified file path.
+ * - `--output-console`: Prints the ASCII art directly to the console.
+ *
+ * @param parsers A list of specialized parsers for the supported export methods. Defaults to the following parsers:
+ *                - `FileExporterCommandLineParser`: Handles the `--output-file` argument.
+ *                - `ConsoleExporterCommandLineParser`: Handles the `--output-console` argument.
  */
 class ExporterCommandLineParserImpl(
                                      parsers: List[SpecializedExporterCommandLineParser[? <: Exporter]] = List(

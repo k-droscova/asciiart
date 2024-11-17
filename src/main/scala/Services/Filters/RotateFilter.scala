@@ -3,6 +3,15 @@ package Services.Filters
 import Core.Errors.{BaseError, FilterErrorCodes, LogContext}
 import Core.Models.Image.GrayscaleImage
 import Core.Models.Pixel.GrayscalePixel
+
+/**
+ * RotateFilter rotates a GrayscaleImage by a specified angle.
+ * The rotation angle must be a multiple of 90 degrees.
+ *
+ * @param angle The rotation angle in degrees. Valid values include multiples of 90.
+ *
+ * @throws BaseError If the specified angle is not a multiple of 90 degrees.
+ */
 class RotateFilter(angle: Int) extends Filter {
   if (angle % 90 != 0) {
     throw BaseError(message = s"Angle $angle is invalid. Angle must be a multiple of 90 degrees.", context = LogContext.UI, errorCode = FilterErrorCodes.InvalidRotationAngle)

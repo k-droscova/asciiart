@@ -12,10 +12,10 @@ package UI.CommandLineParsers
 trait CommandLineParser[T] {
 
   /**
-   * Parses the input string containing command line arguments and returns the corresponding value of type T.
+   * Parses the command line arguments and returns the corresponding value of type T.
    *
-   * @param input A string representing the command line arguments. The input can include various options
-   *              that need to be parsed based on the implementation.
+   * @param args An array of strings representing the command line arguments. Each string represents
+   *             an individual argument or option that needs to be parsed.
    * @return An instance of type T based on the parsed arguments.
    */
   def parse(args: Array[String]): T

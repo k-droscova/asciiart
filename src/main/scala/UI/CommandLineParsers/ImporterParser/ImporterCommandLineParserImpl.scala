@@ -8,8 +8,19 @@ import UI.CommandLineParsers.SingleInputCommandLineParser
 /**
  * Parses command line arguments related to importing images.
  *
- * This class implements the `ImporterCommandLineParser` trait, providing functionality
- * to parse user input and return the appropriate `Importer` instance based on the arguments.
+ * The `ImporterCommandLineParserImpl` class determines the appropriate image import method
+ * based on the provided command line arguments. It delegates the parsing logic to a list
+ * of specialized parsers for different import methods. This class ensures that exactly one
+ * import method is selected, providing meaningful errors for invalid or conflicting inputs.
+ *
+ * Supported Import Methods:
+ * - `--image <path>`: Specifies a file-based importer with the image located at `<path>`.
+ * - `--image-random`: Specifies a random image generator importer.
+ *
+ * @param parsers A list of specialized parsers responsible for handling specific import methods.
+ *                Defaults to the following parsers:
+ *                - `FileImporterCommandLineParser`: Parses file-based import arguments.
+ *                - `RandomImporterCommandLineParser`: Parses random image generation arguments.
  */
 class ImporterCommandLineParserImpl(
                                      parsers: List[SpecializedImporterCommandLineParser[? <: Importer]] = List(

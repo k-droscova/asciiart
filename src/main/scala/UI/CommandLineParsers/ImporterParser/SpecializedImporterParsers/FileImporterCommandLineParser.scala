@@ -2,12 +2,42 @@ package UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers
 
 import Core.Errors.{BaseError, GeneralErrorCodes, ImageLoadingErrorCodes, LogContext}
 import Services.Importers.FileImporters.*
-import Services.Importers.Importer
-import UI.CommandLineParsers.ImporterParser.SpecializedImporterParsers.SpecializedImporterCommandLineParser
 
 import scala.util.boundary.break
-import scala.util.{Try, boundary}
+import scala.util.boundary
 
+/**
+ * Parses command line arguments to determine the file-based image importer.
+ *
+ * The `FileImporterCommandLineParser` is a specialized parser for the `--image` argument, which
+ * specifies the path to an image file. It supports multiple image formats (GIF, JPEG, PNG) and
+ * delegates the creation of the appropriate file importer to a list of format-specific factories.
+ *
+ * Argument Format:
+ * - `--image <path>`: Specifies the path to the input image file.
+ *
+ * Validation:
+ * - Only one `--image` argument is allowed.
+ * - The `--image` argument must be followed by a valid file path.
+ * - The file path must not start with `--`, as this indicates a missing file path.
+ * - The image must be in a supported format (GIF, JPEG, PNG).
+ *
+ * Example:
+ * ```
+ * --image /path/to/image.jpg
+ * ```
+ *
+ * Errors:
+ * - Returns a `BaseError` if:
+ *   - Multiple `--image` arguments are detected.
+ *   - The `--image` argument is not followed by a valid file path.
+ *   - The file is missing, unreadable, or in an unsupported format.
+ *
+ * @param importers A list of functions that create format-specific `FileImporter` instances. Defaults to:
+ *                  - `GIFFileImporter`
+ *                  - `JPEGFileImporter`
+ *                  - `PNGFileImporter`
+ */
 class FileImporterCommandLineParser(
                                      val importers: List[String => FileImporter] = List(
                                        path => new GIFFileImporter(path),

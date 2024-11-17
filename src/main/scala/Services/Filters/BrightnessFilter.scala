@@ -2,6 +2,14 @@ package Services.Filters
 
 import Core.Models.Image.GrayscaleImage
 import Core.Models.Pixel.GrayscalePixel
+
+/**
+ * BrightnessFilter adjusts the brightness of a GrayscaleImage by a specified amount.
+ *
+ * @param brightnessAdjustment The amount to adjust brightness, where positive values
+ *                             increase brightness and negative values decrease it.
+ *                             Intensity values are clamped between 0 and 255.
+ */
 class BrightnessFilter(brightnessAdjustment: Int) extends Filter {
   override def apply(image: GrayscaleImage): GrayscaleImage = {
     val adjustedPixels = image.pixels.map { row =>

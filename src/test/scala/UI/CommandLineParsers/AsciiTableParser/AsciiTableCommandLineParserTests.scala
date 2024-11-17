@@ -47,11 +47,11 @@ class AsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEa
     when(customParser.parse(any())).thenReturn(Right(Some(mock(classOf[AsciiConvertor]))))
     parserList.tail.foreach(p => when(p.parse(any())).thenReturn(Right(None)))
 
-    val result = parser.parse(Array("--custom-table", "custom-chars"))
+    val result = parser.parse(Array("--table=custom", "custom-chars"))
     assert(result.isInstanceOf[AsciiConvertor])
 
-    verify(customParser).parse(Array("--custom-table", "custom-chars"))
-    parserList.tail.foreach(p => verify(p).parse(Array("--custom-table", "custom-chars")))
+    verify(customParser).parse(Array("--table=custom", "custom-chars"))
+    parserList.tail.foreach(p => verify(p).parse(Array("--table=custom", "custom-chars")))
   }
 
   test("Only one parser returns Some (valid bordered table)") {
@@ -70,14 +70,14 @@ class AsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEa
     when(defaultParser.parse(any())).thenReturn(Right(Some(mock(classOf[AsciiConvertor]))))
 
     val thrown = intercept[BaseError] {
-      parser.parse(Array("--custom-table", "custom-chars", "--table=default"))
+      parser.parse(Array("--table=custom", "custom-chars", "--table=default"))
     }
 
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Only one table type can be specified (--custom-table, --table=default, --table=bourke, or --table=bordered)."))
+    assert(thrown.message.contains("Only one table type can be specified (--table=custom, --table=default, --table=bourke, or --table=bordered)."))
 
-    verify(customParser).parse(Array("--custom-table", "custom-chars", "--table=default"))
-    verify(defaultParser).parse(Array("--custom-table", "custom-chars", "--table=default"))
+    verify(customParser).parse(Array("--table=custom", "custom-chars", "--table=default"))
+    verify(defaultParser).parse(Array("--table=custom", "custom-chars", "--table=default"))
   }
 
   test("All parsers return errors") {
@@ -91,7 +91,7 @@ class AsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEa
     }
 
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Only one table type can be specified (--custom-table, --table=default, --table=bourke, or --table=bordered)."))
+    assert(thrown.message.contains("Only one table type can be specified (--table=custom, --table=default, --table=bourke, or --table=bordered)."))
 
     parserList.foreach(p => verify(p).parse(Array.empty))
   }
@@ -105,7 +105,7 @@ class AsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEa
     }
 
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("Only one table type can be specified (--custom-table, --table=default, --table=bourke, or --table=bordered)."))
+    assert(thrown.message.contains("Only one table type can be specified (--table=custom, --table=default, --table=bourke, or --table=bordered)."))
 
     verify(customParser).parse(Array.empty)
     verify(defaultParser).parse(Array.empty)

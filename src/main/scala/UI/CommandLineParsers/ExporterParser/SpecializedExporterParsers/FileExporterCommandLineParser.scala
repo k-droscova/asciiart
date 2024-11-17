@@ -4,7 +4,30 @@ import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
 import Services.Exporters.{Exporter, FileExporter}
 
 /**
- * Specialized parser for the `--output-file` argument.
+ * Parses command line arguments to create a file-based exporter.
+ *
+ * The `FileExporterCommandLineParser` detects and validates the `--output-file` argument,
+ * which specifies the path to save the output ASCII image to a file.
+ *
+ * Argument Format:
+ * - `--output-file <path>`:
+ *   - `<path>`: The path to the file where the ASCII image will be saved. This can be
+ *               an absolute or relative path.
+ *
+ * Validation:
+ * - Only one `--output-file` argument is allowed.
+ * - The filepath must be specified immediately after the `--output-file` argument.
+ *
+ * Example:
+ * ```
+ * --output-file path/to/output.txt
+ * ```
+ *
+ * Errors:
+ * - Returns a `BaseError` if:
+ *   - Multiple `--output-file` arguments are detected.
+ *   - The filepath is missing or improperly specified.
+ *   - An unexpected error occurs during initialization of the `FileExporter`.
  */
 class FileExporterCommandLineParser extends SpecializedExporterCommandLineParser[FileExporter] {
   override def parse(args: Array[String]): Either[BaseError, Option[FileExporter]] = {

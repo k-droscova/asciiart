@@ -2,6 +2,17 @@ package UI.CommandLineParsers
 
 import Core.Errors.BaseError
 
+/**
+ * Abstract class for command line parsers that accept a single input from multiple specialized parsers.
+ *
+ * The `SingleInputCommandLineParser` processes command line arguments by delegating parsing to a list
+ * of specialized parsers. It validates the results to ensure that exactly one valid input is selected.
+ * If no input or multiple inputs are detected, it throws appropriate errors defined by the subclass.
+ *
+ * @param parsers A list of specialized command line parsers. Each parser is responsible for detecting and
+ *                validating its specific argument(s) and returning a result of type `T`.
+ * @tparam T The type of the value parsed from the command line arguments.
+ */
 abstract class SingleInputCommandLineParser[T](
                                                 private val parsers: List[SpecializedCommandLineParser[? <: T]]
                                               ) extends CommandLineParser[T] {
