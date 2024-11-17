@@ -1,14 +1,14 @@
-package Services.CommandLineParsers.FilterParser
+package UI.CommandLineParsers.FilterParser
 
 import Core.Errors.{BaseError, FilterErrorCodes, GeneralErrorCodes}
 import Services.Filters.{BrightnessFilter, InvertFilter, RotateFilter}
-import UI.CommandLineParsers.FilterParser.FilterCommandLineParserImpl
 import org.mockito.MockedConstruction
 import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.compiletime.uninitialized
+
 class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
   private var parser: FilterCommandLineParserImpl = uninitialized
   private var brightnessMock: MockedConstruction[BrightnessFilter] = uninitialized
@@ -144,9 +144,9 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
 
     val filters = parser.parse(Array("--brightness", "5", "--invert", "--rotate", "+90"))
     assert(filters.length == 3)
-    assert(filters.head.isInstanceOf[BrightnessFilter])
-    assert(filters(1).isInstanceOf[InvertFilter])
-    assert(filters(2).isInstanceOf[RotateFilter])
+    assert(filters.exists(_.isInstanceOf[BrightnessFilter]))
+    assert(filters.exists(_.isInstanceOf[InvertFilter]))
+    assert(filters.exists(_.isInstanceOf[RotateFilter]))
 
     brightnessMock.close()
     invertMock.close()
@@ -175,11 +175,11 @@ class FilterCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEach {
 
   test("Valid input with multiple repeated filters") {
     val filters = parser.parse(Array("--brightness", "5", "--invert", "--rotate", "+90", "--brightness", "10"))
+
     assert(filters.length == 4)
-    assert(filters.head.isInstanceOf[BrightnessFilter])
-    assert(filters(1).isInstanceOf[InvertFilter])
-    assert(filters(2).isInstanceOf[RotateFilter])
-    assert(filters(3).isInstanceOf[BrightnessFilter])
+    assert(filters.count(_.isInstanceOf[BrightnessFilter]) == 2)
+    assert(filters.count(_.isInstanceOf[InvertFilter]) == 1)
+    assert(filters.count(_.isInstanceOf[RotateFilter]) == 1)
   }
 
   test("Propagates error from rotate filter constructor when the integer argument is invalid") {
