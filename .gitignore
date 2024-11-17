@@ -195,6 +195,5 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/scala,intellij,sbt,macos,windows,linux
 
-/resources/
 /output/
 /.java-version
