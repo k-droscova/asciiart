@@ -32,7 +32,7 @@ abstract class SingleInputCommandLineParser[T](
    * @param errors            A list of errors returned by the parsers.
    * @return A single valid result or throws an error.
    */
-  private def validateParsers(successfulParsers: List[T], errors: List[BaseError]): T = {
+  protected def validateParsers(successfulParsers: List[T], errors: List[BaseError]): T = {
     val totalInputs = successfulParsers.size + errors.size
 
     totalInputs match {

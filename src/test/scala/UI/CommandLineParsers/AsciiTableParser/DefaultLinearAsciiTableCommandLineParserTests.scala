@@ -25,20 +25,6 @@ class DefaultLinearAsciiTableCommandLineParserTests extends AnyFunSuite with Bef
     parser = null
   }
 
-  test("Should return DefaultLinearAsciiTable if no --table= argument is provided") {
-    defaultTableMock = mockConstruction(classOf[DefaultLinearAsciiTable], (_: DefaultLinearAsciiTable, _: MockedConstruction.Context) => {})
-
-    val args = Array("--some-other-arg", "value")
-    val result = parser.parse(args)
-
-    result match {
-      case Right(Some(convertor)) =>
-      case _ => fail("Expected Right(Some(DefaultLinearAsciiTable)), but got something else.")
-    }
-
-    defaultTableMock.close()
-  }
-
   test("Should return DefaultLinearAsciiTable if --table=default argument is provided once") {
     defaultTableMock = mockConstruction(classOf[DefaultLinearAsciiTable], (_: DefaultLinearAsciiTable, _: MockedConstruction.Context) => {})
 

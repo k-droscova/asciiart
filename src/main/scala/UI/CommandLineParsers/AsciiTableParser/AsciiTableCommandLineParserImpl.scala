@@ -1,6 +1,7 @@
 package UI.CommandLineParsers.AsciiTableParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
+import Core.Models.AsciiTable.Linear.DefaultLinearAsciiTable
 import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
 import UI.CommandLineParsers.AsciiTableParser.SpecializedAsciiParsers.*
 import UI.CommandLineParsers.SingleInputCommandLineParser
@@ -33,6 +34,24 @@ class AsciiTableCommandLineParserImpl(
                                        )
                                      ) extends SingleInputCommandLineParser[AsciiConvertor](parsers) with AsciiTableCommandLineParser {
 
+  override def parse(args: Array[String]): AsciiConvertor = {
+    val argumentGroups = args.filter(_.startsWith("--table="))
+
+    if (argumentGroups.length > 1) {
+      throw multipleInputError()
+    }
+
+    val supportedTables = Set("default", "custom", "bourke", "bordered")
+    argumentGroups.foreach { arg =>
+      val tableValue = arg.stripPrefix("--table=")
+      if (!supportedTables.contains(tableValue)) {
+        throw noInputError()
+      }
+    }
+
+    super.parse(args)
+  }
+
   override protected def noInputError(): BaseError = {
     BaseError(
       message = "You must specify a table type (--table=custom, --table=default, --table=bourke, or --table=bordered).",
@@ -47,5 +66,20 @@ class AsciiTableCommandLineParserImpl(
       context = LogContext.UI,
       errorCode = GeneralErrorCodes.InvalidArgument
     )
+  }
+
+  override protected def validateParsers(successfulParsers: List[AsciiConvertor], errors: List[BaseError]): AsciiConvertor = {
+    val totalInputs = successfulParsers.size + errors.size
+
+    totalInputs match {
+      case 0 =>
+        new AsciiConvertor(new DefaultLinearAsciiTable)
+
+      case 1 =>
+        successfulParsers.headOption.getOrElse(throw errors.head)
+
+      case _ =>
+        throw multipleInputError()
+    }
   }
 }

@@ -32,18 +32,17 @@ import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
  */
 class DefaultLinearAsciiTableCommandLineParser extends SpecializedAsciiTableCommandLineParser {
   override def parse(args: Array[String]): Either[BaseError, Option[AsciiConvertor]] = {
-    val tableArgs = args.filter(_.startsWith("--table="))
+    val defaultTableArgs = args.filter(_ == "--table=default")
 
-    tableArgs match {
-      case Array("--table=default") => Right(Some(new AsciiConvertor(new DefaultLinearAsciiTable)))
-      case Array() => Right(Some(new AsciiConvertor(new DefaultLinearAsciiTable))) // No `--table=` provided
-      case args if args.count(_ == "--table=default") > 1 =>
+    defaultTableArgs.length match {
+      case 0 => Right(None) // Default case when no --table=default
+      case 1 => Right(Some(new AsciiConvertor(new DefaultLinearAsciiTable))) // Explicit case for --table=default
+      case _ =>
         Left(BaseError(
           message = "The --table=default argument is specified multiple times.",
           context = LogContext.UI,
           errorCode = GeneralErrorCodes.InvalidArgument
         ))
-      case _ => Right(None) // Let other parsers handle their cases
     }
   }
 }

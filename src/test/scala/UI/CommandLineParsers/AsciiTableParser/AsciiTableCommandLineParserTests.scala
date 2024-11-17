@@ -1,6 +1,7 @@
 package UI.CommandLineParsers.AsciiTableParser
 
 import Core.Errors.{BaseError, GeneralErrorCodes, LogContext}
+import Core.Models.AsciiTable.Linear.DefaultLinearAsciiTable
 import Services.ImageConvertors.AsciiConvertor.AsciiConvertor
 import UI.CommandLineParsers.AsciiTableParser.SpecializedAsciiParsers.{BorderedAsciiTableCommandLineParser, BourkeLinearAsciiTableCommandLineParser, CustomLinearAsciiTableCommandLineParser, DefaultLinearAsciiTableCommandLineParser}
 import org.mockito.ArgumentMatchers.any
@@ -33,13 +34,10 @@ class AsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEa
   test("All parsers return None (no input provided)") {
     parserList.foreach(p => when(p.parse(any())).thenReturn(Right(None)))
 
-    val thrown = intercept[BaseError] {
-      parser.parse(Array.empty)
-    }
+    val result = parser.parse(Array.empty)
+    assert(result.isInstanceOf[AsciiConvertor])
 
-    assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
-    assert(thrown.message.contains("You must specify a table type (--table=custom, --table=default, --table=bourke, or --table=bordered)."))
-
+    // Verify all parsers were invoked
     parserList.foreach(p => verify(p).parse(Array.empty))
   }
 
@@ -75,9 +73,6 @@ class AsciiTableCommandLineParserTests extends AnyFunSuite with BeforeAndAfterEa
 
     assert(thrown.errorCode == GeneralErrorCodes.InvalidArgument)
     assert(thrown.message.contains("Only one table type can be specified (--table=custom, --table=default, --table=bourke, or --table=bordered)."))
-
-    verify(customParser).parse(Array("--table=custom", "custom-chars", "--table=default"))
-    verify(defaultParser).parse(Array("--table=custom", "custom-chars", "--table=default"))
   }
 
   test("All parsers return errors") {
