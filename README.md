@@ -1,5 +1,7 @@
 # ASCII Art
 
+![Scala CI](https://github.com/k-droscova/asciiart/actions/workflows/ci.yml/badge.svg)
+
 ⚠️ This project was created as part of coursework at FIT CTU.
 Please **do not copy or submit** it as your own if you're a student at any university.
 Feel free to read and learn from it, but **plagiarism is a violation of academic integrity**.
