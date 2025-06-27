@@ -1,10 +1,10 @@
 # ASCII Art
 
-[![pipeline status](https://gitlab.fit.cvut.cz/BI-OOP/B241/asciiart/badges/master/pipeline.svg)](https://gitlab.fit.cvut.cz/BI-OOP/B241/asciiart)
+⚠️ This project was created as part of coursework at FIT CTU.
+Please **do not copy or submit** it as your own if you're a student at any university.
+Feel free to read and learn from it, but **plagiarism is a violation of academic integrity**.
 
 The **ASCII Art** project allows you to transform images into visually stunning ASCII art. Additionally, you can apply various filters to the image, adjust its appearance, and export the results to the console or a file.
-
-This project is part of the BI-OOP course and adheres to the project specifications outlined [here](https://courses.fit.cvut.cz/BI-OOP/projects/ASCII-art.html).
 
 ---
 
